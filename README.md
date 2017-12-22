@@ -9,9 +9,17 @@ The MNWD_BillCalculator folder contains code from one specific utility. The goal
 
 | Original Timeline | Deliverable |
 | ------------- | ------------- |
-| 12/2X/17 | Kickoff meeting |
+| 12/22/17 | Kickoff meeting |
 | ...| ... |
-| 1/X/18 | Launch! |
+| 1/19/18 | Launch! |
 
 
 ARGO team lead: Christopher Tull ( chris@argolabs.org ) 
+
+## Resources
+
+General background information on water rate design [here](https://github.com/California-Data-Collaborative/Open-Water-Rate-Specification/blob/master/AWE-Building-a-better-RateStructure.pdf). Especially pages 24+
+
+Information on the Open Water Rate Specification (OWRS) is [here](https://github.com/California-Data-Collaborative/Open-Water-Rate-Specification).
+
+
