@@ -22,4 +22,6 @@ General background information on water rate design [here](https://github.com/Ca
 
 Information on the Open Water Rate Specification (OWRS) is [here](https://github.com/California-Data-Collaborative/Open-Water-Rate-Specification).
 
+There are lots of R Shiny tutorials [here](https://shiny.rstudio.com/tutorial/).
+
 
