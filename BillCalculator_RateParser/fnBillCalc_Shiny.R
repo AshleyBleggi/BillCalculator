@@ -48,17 +48,9 @@ fnUseByTier <- function(df1, tablemode){
     #Tier Use and Rate Arrays
     inputs <- data.frame(
       tiers = c("Tier 1","Tier 2","Tier 3","Tier 4","Tier 5"),
-      #tier_breaks = c(0,0,0,0,0),
       tier_use = numeric(len),
       tier_rates = numeric(len),  # Stage 1 Rates
-      # tier_rates = c(1.56,1.78,9.21,9.21,9.21),  # Stage 2 Rates
-      #tier_rates_drought = c(0,0,6.55,4.79,0), #drought rates
       tier_charge =  numeric(len)
-      #tier_charge_drought =  c(0,0,0,0,0),
-      #new_tier_breaks = c(0,0,0,0,0),
-      #new_tier_use = c(0,0,0,0,0),
-      #new_tier_rates = c(1.69,1.94,3.32,5.12,9.59),
-      #new_tier_charge = c(0,0,0,0,0)
     )
     rownames(inputs) <- c("Tier 1","Tier 2","Tier 3","Tier 4","Tier 5")
     
@@ -175,37 +167,12 @@ fnUseByTier <- function(df1, tablemode){
                                              "Total Bill"),
                             `Usage Per Tier` = c(inputs$tier_use,"",""),
                             
-                            #`New Usage Per Tier` = c(inputs$new_tier_use,"","","","",""),
-                            
-                            # Price = c(paste0("$",
-                            #                  formatC(as.numeric(inputs$tier_rates),
-                            #                          format="f",
-                            #                          digits=2,
-                            #                          big.mark=",")
-                            # ),"","","","",""),
-                            # 
-                            # `Proposed Price` = c(paste0("$",
-                            #                             formatC(as.numeric(inputs$new_tier_rates),
-                            #                                     format="f",
-                            #                                     digits=2,
-                            #                                     big.mark=",")
-                            # ),"","","","$4.31",""),
-                            
                             `Current Charge` = paste0("$",
                                                       formatC(as.numeric(c(inputs$tier_charge,total_vol_charge,
                                                                            total_bill)),
                                                               format="f",
                                                               digits=2,
                                                               big.mark=","))
-                            
-                            # `Proposed Charge` = paste0("$",
-                            #                            formatC(as.numeric(c(inputs$new_tier_charge,new_total_vol_charge,
-                            #                                                 new_total_fix_charge,
-                            #                                                 new_total_ww_service_charge, per_person_sewer_charge,
-                            #                                                 new_total_bill)),
-                            #                                    format="f",
-                            #                                    digits=2,
-                            #                                    big.mark=","))
                             
     )
     colnames(vol_table) <- c("Usage Tier","Usage Per Tier",
@@ -255,17 +222,9 @@ else if(len == 4){
   #Tier Use and Rate Arrays  
   inputs <- data.frame(
     tiers = c("Tier 1","Tier 2","Tier 3","Tier 4"),
-    #tier_breaks = c(0,0,0,0,0),
     tier_use = numeric(len),
     tier_rates = numeric(len),  # Stage 1 Rates
-    # tier_rates = c(1.56,1.78,9.21,9.21,9.21),  # Stage 2 Rates
-    #tier_rates_drought = c(0,0,6.55,4.79,0), #drought rates
     tier_charge =  numeric(len)
-    #tier_charge_drought =  c(0,0,0,0,0),
-    #new_tier_breaks = c(0,0,0,0,0),
-    #new_tier_use = c(0,0,0,0,0),
-    #new_tier_rates = c(1.69,1.94,3.32,5.12,9.59),
-    #new_tier_charge = c(0,0,0,0,0)
   )
   rownames(inputs) <- c("Tier 1","Tier 2","Tier 3","Tier 4")
   
@@ -384,21 +343,6 @@ else if(len == 4){
                                            "Total Bill"),
                           `Usage Per Tier` = c(inputs$tier_use,"",""),
                           
-                          #`New Usage Per Tier` = c(inputs$new_tier_use,"","","","",""),
-                          
-                          # Price = c(paste0("$",
-                          #                  formatC(as.numeric(inputs$tier_rates),
-                          #                          format="f",
-                          #                          digits=2,
-                          #                          big.mark=",")
-                          # ),"","","","",""),
-                          # 
-                          # `Proposed Price` = c(paste0("$",
-                          #                             formatC(as.numeric(inputs$new_tier_rates),
-                          #                                     format="f",
-                          #                                     digits=2,
-                          #                                     big.mark=",")
-                          # ),"","","","$4.31",""),
                           
                           `Current Charge` = paste0("$",
                                                     formatC(as.numeric(c(inputs$tier_charge,total_vol_charge,
@@ -406,15 +350,6 @@ else if(len == 4){
                                                             format="f",
                                                             digits=2,
                                                             big.mark=","))
-                          
-                          # `Proposed Charge` = paste0("$",
-                          #                            formatC(as.numeric(c(inputs$new_tier_charge,new_total_vol_charge,
-                          #                                                 new_total_fix_charge,
-                          #                                                 new_total_ww_service_charge, per_person_sewer_charge,
-                          #                                                 new_total_bill)),
-                          #                                    format="f",
-                          #                                    digits=2,
-                          #                                    big.mark=","))
                           
   )
   colnames(vol_table) <- c("Usage Tier","Usage Per Tier",
