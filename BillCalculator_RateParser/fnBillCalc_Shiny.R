@@ -9,6 +9,7 @@ library(gtable)
 library(scales)
 library(forcats)
 library(RateParser)
+library(ggmap)
 
 
 
@@ -31,15 +32,22 @@ round2 = function(x, n) {
 
 #To center the title by default for all ggplots
 theme_update(plot.title = element_text(hjust = 0.5))
-owrs_file <- read_owrs_file("examples/mnwd-2016-01-01.owrs")
+#owrs_file <- read_owrs_file("examples/mnwd-2016-01-01.owrs")
 #Function to Calculate Usage by Tier and Plot
 #************One-shot Version********************  
 fnUseByTier <- function(df1, tablemode){
   ##########################################5 tier############################################### 
+  # district_all <- c("Beverly Hills City of - 239/07-03-2017.owrs", "Santa Monica City of - 364/smc-2017-01-01.owrs", "Moulton Niguel Water District - 147/mnwd-2016-01-01.owrs")
+  # names(district_all) <- c("239", "364", "147")
+  # owrs_file <- read_owrs_file(paste("California/", district_all[as.character(df1$district)], sep = ""))
+  #owrs_file <- read_owrs_file("examples/mnwd-2016-01-01.owrs")
   calced <- calculate_bill(df1, owrs_file)
   custclass <- df1$cust_class
   commodity_id <- as.character(owrs_file$rate_structure[[as.character(custclass)]]$commodity_charge)
-  #View(commodity_id)
+
+  # mygeocode <- geocode(as.character(df1$address), output = "latlon")
+  
+  #View(mygeocode)
   
   if((commodity_id == "Budget")  || (commodity_id == "Tiered")){
   len <- length(owrs_file$rate_structure[[as.character(custclass)]]$tier_starts)
@@ -62,11 +70,6 @@ fnUseByTier <- function(df1, tablemode){
       col_name <- sprintf("X%s", i)
       inputs$tier_use[i] <- calced[[col_name]]
     }
-    # inputs$tier_use[1] <- calced$X1
-    # inputs$tier_use[2] <- calced$X2
-    # inputs$tier_use[3] <- calced$X3
-    # inputs$tier_use[4] <- calced$X4
-    # inputs$tier_use[5] <- calced$X5
     new_usage <- sum(inputs$tier_use)
     
     #determine charge per tier
@@ -75,11 +78,6 @@ fnUseByTier <- function(df1, tablemode){
       col_name <- sprintf("XR%s", i)
       inputs$tier_charge[i] <- calced[[col_name]]
     }
-    # inputs$tier_charge[1] <- calced$XR1
-    # inputs$tier_charge[2] <- calced$XR2
-    # inputs$tier_charge[3] <- calced$XR3
-    # inputs$tier_charge[4] <- calced$XR4
-    # inputs$tier_charge[5] <- calced$XR5
     inputs$tier_charge
     use_charge <- sum(inputs$tier_charge[1:len])
     
@@ -236,11 +234,6 @@ else if(len == 4){
     col_name <- sprintf("X%s", i)
     inputs$tier_use[i] <- calced[[col_name]]
   }
-  # inputs$tier_use[1] <- calced$X1
-  # inputs$tier_use[2] <- calced$X2
-  # inputs$tier_use[3] <- calced$X3
-  # inputs$tier_use[4] <- calced$X4
-  # inputs$tier_use[5] <- calced$X5
   
   new_usage <- sum(inputs$tier_use)
   
@@ -251,11 +244,6 @@ else if(len == 4){
     col_name <- sprintf("XR%s", i)
     inputs$tier_charge[i] <- calced[[col_name]]
   }
-  # inputs$tier_charge[1] <- calced$XR1
-  # inputs$tier_charge[2] <- calced$XR2
-  # inputs$tier_charge[3] <- calced$XR3
-  # inputs$tier_charge[4] <- calced$XR4
-  # inputs$tier_charge[5] <- calced$XR5
   inputs$tier_charge
   use_charge <- sum(inputs$tier_charge[1:len])
   
@@ -390,8 +378,158 @@ else if(len == 4){
   # }else
   #   bill_table
   
-  ##########################################No tier################################################# 
+  ##########################################3 tier################################################# 
 }
+
+  else if(len == 3){
+    ##******Initial Use and Rate Arrays******
+    #Tier Use and Rate Arrays  
+    inputs <- data.frame(
+      tiers = c("Tier 1","Tier 2","Tier 3"),
+      tier_use = numeric(len),
+      tier_rates = numeric(len),  # Stage 1 Rates
+      tier_charge =  numeric(len)
+    )
+    rownames(inputs) <- c("Tier 1","Tier 2","Tier 3")
+    
+    ##*************************************   
+    #determine use per tier given customer usage
+    
+    
+    for(i in c(1:len)) {
+      col_name <- sprintf("X%s", i)
+      inputs$tier_use[i] <- calced[[col_name]]
+    }
+    
+    new_usage <- sum(inputs$tier_use)
+    
+    
+    #determine charge per tier
+    
+    for(i in c(1:len)) {
+      col_name <- sprintf("XR%s", i)
+      inputs$tier_charge[i] <- calced[[col_name]]
+    }
+    inputs$tier_charge
+    use_charge <- sum(inputs$tier_charge[1:len])
+    
+    total_vol_charge <- calced$commodity_charge #total_vol_charge <- sum(use_charge,penalty_charge)
+    
+    #use reshape's "melt" function to change 'tier_use' to long-form
+    df <- melt(inputs, id.vars = "tiers")
+    
+    #***************graphs**************************    
+    #use ggplot to create stacked bar graph of use by tier
+    use_breaks <- pretty(c(1:new_usage),n = len)
+    p1 <- ggplot(subset(df, variable %in% c("tier_use")), aes(x=variable, y=value, fill=fct_rev(tiers))) + 
+      geom_bar(stat="identity", width=0.25) +
+      ggtitle("Water Usage by Tier\n") +
+      xlab("") +
+      ylab("Billing Units (ccf)\n") +
+      scale_y_continuous(breaks = use_breaks, labels = use_breaks) +
+      scale_x_discrete(labels=c("tier_use" = "Current\n Usage"
+      ))+
+      scale_fill_manual(values = rev(c("blue", "green3", "yellow"))
+      ) +
+      theme(axis.text.x = element_text(face="bold", color="#993333", 
+                                       size=14),
+            axis.text.y = element_text(face="bold", color="#993333", 
+                                       size=12),
+            #panel.grid.major.x = element_blank(),
+            #panel.grid.minor.x = element_blank(),
+            legend.position = "none")+
+      guides(fill=guide_legend(title=NULL))
+    p1
+    
+    #use ggplot to create stacked bar graph of charge by tier  
+    bill_breaks <- pretty(c(1:use_charge),len)
+    p2 <- ggplot(subset(df, variable %in% c("tier_charge")), aes(x=variable, y=value, fill=fct_rev(tiers))) +
+      geom_bar(stat="identity", width=0.25) +
+      ggtitle("Water Charge by Tier\n") +
+      xlab("") +
+      ylab("Dollars\n") +
+      scale_fill_manual(values = rev(c("blue", "green3", "yellow"))
+      ) +
+      scale_y_continuous(labels = dollar_format(),
+                         breaks = bill_breaks)+
+      scale_x_discrete(labels=c("tier_charge" = "Current\n Charge"
+      ))+
+      theme(axis.text.x = element_text(face="bold", color="#993333", 
+                                       size=14),
+            axis.text.y = element_text(face="bold", color="#993333", 
+                                       size=12),
+            #panel.grid.major.x = element_blank(),
+            #panel.grid.minor.x = element_blank(),
+            legend.position = "none")+
+      guides(fill=guide_legend(title=NULL))
+    p2
+    
+    #use ggplot to create stacked bar graph of charge by tier  
+    plegd_breaks <- c(0:4)
+    plegd <- ggplot(subset(df, variable == "tier_charge"), aes(x=variable, y=value, fill=factor(tiers))) + 
+      geom_bar(stat="identity", width=0) +
+      xlab("") +
+      ylab("") +
+      scale_fill_manual(values = c("yellow", "green3", "blue"),
+                        limits = c("1","2","3"),
+                        labels = c("Tier 3","Tier 2","Tier 1")
+      ) +
+      scale_y_discrete(breaks = plegd_breaks) +
+      theme(axis.text.x = element_blank(),
+            axis.text.y = element_blank(),
+            axis.ticks.x = element_blank(),
+            axis.ticks.y = element_blank(),
+            panel.grid.major.x = element_blank(),
+            panel.grid.minor.x = element_blank(),
+            panel.background =element_rect(fill = NA),
+            legend.position = c(0.5,0.5))+
+      guides(fill=guide_legend(title=NULL))
+    plegd
+    
+    #Sum of Current Charges
+    total_bill = calced$bill
+    
+    #Table Preparation
+    vol_table <- data.frame(`Usage Tier` = c("Tier 1","Tier 2",
+                                             "Tier 3",
+                                             "Total Water\nUsage Charge",
+                                             "Total Bill"),
+                            `Usage Per Tier` = c(inputs$tier_use,"",""),
+                            
+                            
+                            `Current Charge` = paste0("$",
+                                                      formatC(as.numeric(c(inputs$tier_charge,total_vol_charge,
+                                                                           total_bill)),
+                                                              format="f",
+                                                              digits=2,
+                                                              big.mark=","))
+                            
+    )
+    colnames(vol_table) <- c("Usage Tier","Usage Per Tier",
+                             "Current Charge")
+    
+    
+    #Fn ouputs plot/table
+    if(tablemode == FALSE){
+      plotList<-list(p1,p2,plegd)
+      return(plotList)
+      #grid.arrange(arrangeGrob(p1, p2,plegd, ncol = 3, widths = unit(c(2/5,2/5,1/5),"npc")),
+      #nullGrob()
+      #arrangeGrob(t1, nullGrob(),t2, ncol = 1, heights = unit(c(4/10,2/10,4/10),"npc")),
+      ## Information on Stage 2 penalties
+      # textGrob("*$7.43 of the $9.21 per BU is a penalty for using water in excess of your water budget.",
+      #          gp=gpar(fontsize=12,fontface="italic")),
+      #nrow=4, ncol=1,
+      #heights=c(3, 1/8, 3, 1)
+      #)
+    }else if(tablemode == TRUE){
+      vol_table
+    }  
+    # }else
+    #   bill_table
+    
+    ##########################################No tier################################################# 
+  }
   }
   else{
     total_vol_charge <- calced$commodity_charge

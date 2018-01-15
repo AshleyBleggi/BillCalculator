@@ -1,14 +1,34 @@
 library(shiny)
 library(DT)
 source("fnBillCalc_Shiny.R")
+source("address_Shiny.R")
 
 `%then%` <- shiny:::`%OR%`
 
 shinyServer(
   function(input, output) {
+    output$address <- renderText({
+      validate(
+        need(input$district, "-Please specify district") %then%
+          need(input$district < 9999 & input$usage > 0, "-Please enter district"),
+
+        need(input$address, "-Please specify address") %then%
+          need(!is.null(input$address), "-Please enter address")
+      )
+      district <- input$district
+      address <- input$address
+      paste("District No.", fnAddress(district, address))
+    })
+    
     #Usage plot
     output$use <- renderPlot({
       validate(
+        need(input$district, "") %then%
+          need(input$district < 9999 & input$usage > 0, ""),
+        
+        need(input$address, "") %then%
+          need(!is.null(input$address), ""),
+        
         need(input$usage, "-Please specify water usage") %then%
           need(input$usage < 999 & input$usage > 0, "-Please enter usage between 0 and 999 BU"),
         
@@ -19,12 +39,8 @@ shinyServer(
           need(input$homesize, "-Please specify your household size")} %then% 
           need(input$homesize < 99 & input$homesize > 0, "-Please enter a household size less than 99"),
         
-        if(input$cust_class != "Commercial Non-Irrigation"){
-          need(input$irr_area, "-Please specify the irrigable area associated with your account") %then% 
-            need(input$irr_area < 99999 & input$irr_area > 0, "-Please enter an irrigable area less than 99,999 and greater than 0")}
-        else{
-          need(input$usage, "-Please specify typical historical usage for a billing period") %then%
-            need(input$typical_usage < 999 & input$typical_usage > 0, "-Please enter typical usage between 0 and 999 BU")},
+        need(input$irr_area, "-Please specify the irrigable area associated with your account") %then%
+            need(input$irr_area < 99999 & input$irr_area > 0, "-Please enter an irrigable area less than 99,999 and greater than 0"),
         
         need(input$et, "-Please specify the evapotranspiration factor associated with this bill:
              ET varies daily by microzone. There are 110 microzones within the MNWD service area.
@@ -45,8 +61,10 @@ shinyServer(
         meter_size = as.character(input$meter), cust_class = as.character(input$cust_class),
         #typical_usage = input$typical_usage
         water_type = as.character(input$water_type)
+        #district = as.character(input$district),
+        #address = input$address
       )
-      
+     
       #call plots
       plotList<-fnUseByTier(input_df, tablemode = FALSE)
       plotList[[1]]
@@ -58,6 +76,12 @@ shinyServer(
     #Charges plot
     output$charge<-renderPlot({
       validate(
+        need(input$district, "") %then%
+          need(input$district < 9999 & input$usage > 0, ""),
+        
+        need(input$address, "") %then%
+          need(!is.null(input$address), ""),
+        
         need(input$usage, "") %then%
           need(input$usage < 999 & input$usage > 0, ""),
 
@@ -68,12 +92,8 @@ shinyServer(
           need(input$homesize, "")} %then%
           need(input$homesize < 99 & input$homesize > 0, ""),
 
-        if(input$cust_class != "Commercial Non-Irrigation"){
-          need(input$irr_area, "") %then%
-            need(input$irr_area < 99999 & input$irr_area > 0, "")}
-        else{
-          need(input$typical_usage,"") %then%
-            need(input$typical_usage < 999 & input$typical_usage > 0, "")},
+        need(input$irr_area, "") %then%
+          need(input$irr_area < 99999 & input$irr_area > 0, ""),
 
         need(input$et, "") %then%
           need(input$et < 99 & input$et > 0, "")
@@ -85,6 +105,8 @@ shinyServer(
         et_amount = input$et,
         meter_size = as.character(input$meter), cust_class = as.character(input$cust_class),
         water_type = as.character(input$water_type)
+        #district = as.character(input$district),
+        #address = input$address
       )
       #call plots
       plotList<-fnUseByTier(input_df, tablemode = FALSE)
@@ -98,6 +120,12 @@ shinyServer(
     output$legend<-renderPlot({
       #call plots
       validate(
+        need(input$district, "") %then%
+          need(input$district < 9999 & input$usage > 0, ""),
+        
+        need(input$address, "") %then%
+          need(!is.null(input$address), ""),
+        
         need(input$usage, "") %then%
           need(input$usage < 999 & input$usage > 0, ""),
 
@@ -108,12 +136,8 @@ shinyServer(
           need(input$homesize, "")} %then%
           need(input$homesize < 99 & input$homesize > 0, ""),
 
-        if(input$cust_class != "Commercial Non-Irrigation"){
-          need(input$irr_area, "") %then%
-            need(input$irr_area < 99999 & input$irr_area > 0, "")}
-        else{
-          need(input$typical_usage,"") %then%
-            need(input$typical_usage < 999 & input$typical_usage > 0, "")},
+        need(input$irr_area, "") %then%
+          need(input$irr_area < 99999 & input$irr_area > 0, ""),
 
         need(input$et, "") %then%
           need(input$et < 99 & input$et > 0, "")
@@ -125,6 +149,8 @@ shinyServer(
         et_amount = input$et,
         meter_size = as.character(input$meter), cust_class = as.character(input$cust_class),
         water_type = as.character(input$water_type)
+        #district = as.character(input$district),
+        #address = input$address
       )
       plotList<-fnUseByTier(input_df, tablemode = FALSE)
       plotList[[3]]
@@ -133,6 +159,12 @@ shinyServer(
     #call vol table
     output$vol_table <- renderDataTable({
       validate(
+        need(input$district, "") %then%
+          need(input$district < 9999 & input$usage > 0, ""),
+        
+        need(input$address, "") %then%
+          need(!is.null(input$address), ""),
+        
         need(input$usage, "") %then%
           need(input$usage < 999 & input$usage > 0, ""),
 
@@ -143,12 +175,8 @@ shinyServer(
           need(input$homesize, "")} %then%
           need(input$homesize < 99 & input$homesize > 0, ""),
 
-        if(input$cust_class != "Commercial Non-Irrigation"){
-          need(input$irr_area, "") %then%
-            need(input$irr_area < 99999 & input$irr_area > 0, "")}
-        else{
-          need(input$typical_usage,"") %then%
-            need(input$typical_usage < 999 & input$typical_usage > 0, "")},
+        need(input$irr_area, "") %then%
+          need(input$irr_area < 99999 & input$irr_area > 0, ""),
 
         need(input$et, "") %then%
           need(input$et < 99 & input$et > 0, "")
@@ -160,6 +188,8 @@ shinyServer(
         et_amount = input$et,
         meter_size = as.character(input$meter), cust_class = as.character(input$cust_class),
         water_type = as.character(input$water_type)
+        #district = as.character(input$district),
+        #address = input$address
       )
       
       

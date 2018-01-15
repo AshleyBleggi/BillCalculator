@@ -1,0 +1,294 @@
+---
+metadata:
+  effective_date: 2017-01-01
+  utility_name: "Los Angeles Department of Water and Power"
+  bill_frequency: bimonthly
+rate_structure:
+  RESIDENTIAL_SINGLE:
+    tier_starts:
+      depends_on:
+        - season
+        - lot_size_group
+        - temperature_zone
+      values:
+        Winter|1|Low:
+          - 0
+          - 17
+          - 23
+          - 35
+        Winter|1|Medium:
+          - 0
+          - 17
+          - 23
+          - 35
+        Winter|1|High:
+          - 0
+          - 17
+          - 23
+          - 35
+        Summer|1|Low:
+          - 0
+          - 17
+          - 29
+          - 53
+        Summer|1|Medium:
+          - 0
+          - 17
+          - 31
+          - 59
+        Summer|1|High:
+          - 0
+          - 17
+          - 35
+          - 71
+        Winter|2|Low:
+          - 0
+          - 17
+          - 25
+          - 41
+        Winter|2|Medium:
+          - 0
+          - 17
+          - 25
+          - 41
+        Winter|2|High:
+          - 0
+          - 17
+          - 25
+          - 41
+        Summer|2|Low:
+          - 0
+          - 17
+          - 35
+          - 71
+        Summer|2|Medium:
+          - 0
+          - 17
+          - 37
+          - 77
+        Summer|2|High:
+          - 0
+          - 17
+          - 41
+          - 89
+        Winter|3|Low:
+          - 0
+          - 17
+          - 33
+          - 65
+        Winter|3|Medium:
+          - 0
+          - 17
+          - 33
+          - 65
+        Winter|3|High:
+          - 0
+          - 17
+          - 33
+          - 65
+        Summer|3|Low:
+          - 0
+          - 17
+          - 51
+          - 119
+        Summer|3|Medium:
+          - 0
+          - 17
+          - 55
+          - 131
+        Summer|3|High:
+          - 0
+          - 17
+          - 67
+          - 167
+        Winter|4|Low:
+          - 0
+          - 17
+          - 37
+          - 77
+        Winter|4|Medium:
+          - 0
+          - 17
+          - 37
+          - 77
+        Winter|4|High:
+          - 0
+          - 17
+          - 37
+          - 77
+        Summer|4|Low:
+          - 0
+          - 17
+          - 59
+          - 143
+        Summer|4|Medium:
+          - 0
+          - 17
+          - 65
+          - 161
+        Summer|4|High:
+          - 0
+          - 17
+          - 79
+          - 203
+        Winter|5|Low:
+          - 0
+          - 17
+          - 37
+          - 77
+        Winter|5|Medium:
+          - 0
+          - 17
+          - 37
+          - 77
+        Winter|5|High:
+          - 0
+          - 17
+          - 37
+          - 77
+        Summer|5|Low:
+          - 0
+          - 17
+          - 59
+          - 143
+        Summer|5|Medium:
+          - 0
+          - 17
+          - 65
+          - 161
+        Summer|5|High:
+          - 0
+          - 17
+          - 79
+          - 203
+    tier_prices:
+        - 5.892
+        - 7.341
+        - 8.206
+        - 8.206
+    commodity_charge: Tiered
+    outside_city_service_price:
+      depends_on: city_limits
+      values:
+        outside_city: 0.441
+        inside_city: 0
+    outside_city_service_charge: "outside_city_service_price*usage_ccf"
+    bill: "commodity_charge+outside_city_service_charge"
+
+  RESIDENTIAL_MULTI:
+    days_in_period: 60.8
+    budget: usage_indoor_budget_ccf*days_in_period
+    adjusted_budget: budget * 0.93
+    indoor:
+      depends_on: greater_than
+      values:
+        False: adjusted_budget
+        True: 24
+    tier_starts:
+      - 0
+      - indoor
+      - 100%
+    tier_prices:
+      - 5.996
+      - 9.205
+      - 9.205
+    commodity_charge: Budget
+    outside_city_service_price:
+      depends_on: city_limits
+      values:
+        outside_city: 0.441
+        inside_city: 0
+    outside_city_service_charge: "outside_city_service_price*usage_ccf"
+    bill: "commodity_charge+outside_city_service_charge"
+
+  COMMERCIAL:
+    days_in_period: 60.8
+    budget: "usage_indoor_budget_ccf * days_in_period"
+    indoor_price:
+      depends_on: season
+      values:
+        Winter: 1
+        Summer: 1.05
+    indoor: "budget*indoor_price"
+    tier_starts:
+      - 0
+      - indoor
+      - 100%
+    tier_prices:
+      - 5.762
+      - 8.711
+      - 8.711
+    commodity_charge: Budget
+    outside_city_service_price:
+      depends_on: city_limits
+      values:
+        outside_city: 0.441
+        inside_city: 0
+    outside_city_service_charge: "outside_city_service_price*usage_ccf"
+    bill: "commodity_charge+outside_city_service_charge"
+
+  INDUSTRIAL:
+    days_in_period: 60.8
+    budget: "usage_indoor_budget_ccf * days_in_period"
+    indoor_price:
+      depends_on: season
+      values:
+        Winter: 1
+        Summer: 1.05
+    indoor: "budget*indoor_price"
+    tier_starts:
+      - 0
+      - indoor
+    tier_prices:
+      - 5.762
+      - 8.711
+    outside_city_service_price:
+      depends_on: city_limits
+      values:
+        outside_city: 0.441
+        inside_city: 0
+    outside_city_service_charge: "outside_city_service_price*usage_ccf"
+    bill: "commodity_charge + outside_city_service_charge"
+
+  GOVERNMENTAL:
+    days_in_period: 60.8
+    budget: "usage_indoor_budget_ccf * days_in_period"
+    indoor_price:
+      depends_on: season
+      values:
+        Winter: 1
+        Summer: 1.05
+    indoor: "budget*indoor_price"
+    tier_starts:
+      - 0
+      - indoor
+    tier_prices:
+      - 5.762
+      - 8.711
+    outside_city_service_price:
+      depends_on: city_limits
+      values:
+        outside_city: outside_city_service_rate
+        inside_city: 0.441
+    outside_city_service_charge: "outside_city_service_price*usage_ccf"
+    bill: "commodity_charge + outside_city_service_charge"
+
+  FIRE_SERVICE:
+    service_charge:
+      depends_on: meter_size
+      values:
+        1"     : 3.20
+        1 1/2" : 11.35
+        2"     : 16.13
+        3"     : 39.73
+        4"     : 63.33
+        6"     : 111.98
+        8"     : 219.24
+        10"    : 264.04
+        12"    : 339.48
+        14"    : 528.08
+        16"    : 631.81
+        20"    : 847.51
+    flat_rate: 1.331
+    commodity_charge: "flat_rate*usage_ccf"
+    bill: "service_charge+commodity_charge"

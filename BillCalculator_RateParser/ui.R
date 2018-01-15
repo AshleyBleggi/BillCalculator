@@ -12,10 +12,10 @@ shinyUI(fluidPage(
       imageOutput("logo", height = 120, width = 171),
       h5(em("Please refer to your bill for the required inputs")),
       selectInput("cust_class", label = "Customer Class", choices = c("Single Family Residential" = "RESIDENTIAL_SINGLE",
-                                                                      "Multi Family Residential" = "RESIDENTIAL_MULTI",
-                                                                      "Commercial" = "COMMERCIAL",
+                                                                      "Multi Family Residential" = "RESIDENTIAL_MULTI"
+                                                                      #"Commercial" = "COMMERCIAL",
                                                                       #"Commercial Non-Irrigation",
-                                                                      "Irrigation" = "IRRIGATION"
+                                                                      #"Irrigation" = "IRRIGATION"
                                                                       #"Recycled"
                                                                       #"Fire Protection",
                                                                       #"Construction Meter"
@@ -32,20 +32,57 @@ shinyUI(fluidPage(
         numericInput("homesize", label = h5("Persons in Household"),
                      value = NULL, min = 0, max = 99)
       ),
-      conditionalPanel(
-        condition = "input.cust_class == 'Commercial Non-Irrigation'",icon("tint"),
-        numericInput("typical_usage", label = h5("Typical historical Usage (BU) for a Billing Period"),
-                     value = NULL, min = 0, max = 999)
-      ),
-      conditionalPanel(
-        condition = "input.cust_class != 'Commercial Non-Irrigation'",icon("tree"),
-        numericInput("irr_area", label = h5("Irrigable Area (sq. ft.)"), value = NULL, min = 0, max = 99999)
-      ),
+      # conditionalPanel(
+      #   condition = "input.cust_class == 'Commercial Non-Irrigation'",icon("tint"),
+      #   numericInput("typical_usage", label = h5("Typical historical Usage (BU) for a Billing Period"),
+      #                value = NULL, min = 0, max = 999)
+      # ),
+      # conditionalPanel(
+      #   condition = "input.cust_class != 'Commercial Non-Irrigation'",icon("tree"),
+      #   numericInput("irr_area", label = h5("Irrigable Area (sq. ft.)"), value = NULL, min = 0, max = 99999)
+      # ),
       # conditionalPanel(
       #   condition = "input.cust_class == 'Multi Family Residential'",
       #   numericInput("homesize", label = h5("Persons in Household"),
       #                value = NULL, min = 0, max = 99)
       # ),
+ 
+      h4(""),icon("tree"),
+      h5("Irrigable Area (sq. ft.)"),
+      #h6("(1 BU = 748 gallons)"),
+      numericInput("irr_area", label = NULL, value = NULL, min = 0, max = 99999),
+      
+      
+      # h4(""),
+      # h5("Water District"),
+      # #h6("(1 BU = 748 gallons)"),
+      # numericInput("district", label = NULL, value = NULL, min = 0, max = 9999),
+      
+      
+      h4(""),
+      h5("Water District"),
+      #h6("(Typically 3/4 in. for residential customers)"),
+      selectInput("district", 
+                  label = NULL,
+                  choices = c("Beverly Hills City" = 239, 
+                              "Moulton Niguel Water District" = 147,
+                              "Santa Monica City" = 364,
+                              "Amador Water Agency" = 71,
+                              "Apple Valley Ranchos Water Company" = 379,
+                              "Brentwood City" = 275,
+                              "Burbank City" = 270,
+                              "California Water Service Company Antelope Valley" = 406
+                              ),
+                  selected = 147),
+      
+      
+      
+      h4(""),
+      h5("Address"),
+      #h6("(1 BU = 748 gallons)"),
+      textInput("address", label = NULL, value = ""),
+      
+      
       h4(""),icon("tint"),
       h5("Billing Units Used"),
       h6("(1 BU = 748 gallons)"),
@@ -103,6 +140,7 @@ shinyUI(fluidPage(
             style = "font-family: 'Arial Narrow'; margin-top: 0em")),
       splitLayout(cellWidths = c("43%", "43%", "14%"), plotOutput("use"), plotOutput("charge"),plotOutput("legend")),
       #plotOutput("use"),
+      textOutput("address"),
       dataTableOutput("vol_table")
       #dataTableOutput("bill_table")
       ,width = 9)
