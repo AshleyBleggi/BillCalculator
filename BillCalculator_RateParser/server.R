@@ -8,25 +8,22 @@ shinyServer(
   function(input, output) {
     output$address <- renderText({
       validate(
-        need(input$district, "-Please specify district") %then%
-          need(input$district < 9999 & input$usage > 0, "-Please enter district"),
+        need(input$district, "-Please specify district")
+        # need(input$district, "-Please specify district") %then%
+        #   need(input$district < 9999 & input$usage > 0, "-Please enter district")
 
-        need(input$address, "-Please specify address") %then%
-          need(!is.null(input$address), "-Please enter address")
+        # need(input$address, "-Please specify address") %then%
+        #   need(!is.null(input$address), "-Please enter address")
       )
       district <- input$district
-      address <- input$address
-      paste("District No.", fnAddress(district, address))
+      #address <- input$address
+      paste("District:", fnAddress(district))
     })
     
     #Usage plot
     output$use <- renderPlot({
       validate(
-        need(input$district, "") %then%
-          need(input$district < 9999 & input$usage > 0, ""),
-        
-        need(input$address, "") %then%
-          need(!is.null(input$address), ""),
+        need(input$district, ""),
         
         need(input$usage, "-Please specify water usage") %then%
           need(input$usage < 999 & input$usage > 0, "-Please enter usage between 0 and 999 BU"),
@@ -75,11 +72,7 @@ shinyServer(
     #Charges plot
     output$charge<-renderPlot({
       validate(
-        need(input$district, "") %then%
-          need(input$district < 9999 & input$usage > 0, ""),
-        
-        need(input$address, "") %then%
-          need(!is.null(input$address), ""),
+        need(input$district, ""),
         
         need(input$usage, "") %then%
           need(input$usage < 999 & input$usage > 0, ""),
@@ -119,11 +112,7 @@ shinyServer(
     output$legend<-renderPlot({
       #call plots
       validate(
-        need(input$district, "") %then%
-          need(input$district < 9999 & input$usage > 0, ""),
-        
-        need(input$address, "") %then%
-          need(!is.null(input$address), ""),
+        need(input$district, ""),
         
         need(input$usage, "") %then%
           need(input$usage < 999 & input$usage > 0, ""),
@@ -158,11 +147,7 @@ shinyServer(
     #call vol table
     output$vol_table <- renderDataTable({
       validate(
-        need(input$district, "") %then%
-          need(input$district < 9999 & input$usage > 0, ""),
-        
-        need(input$address, "") %then%
-          need(!is.null(input$address), ""),
+        need(input$district, ""),
         
         need(input$usage, "") %then%
           need(input$usage < 999 & input$usage > 0, ""),

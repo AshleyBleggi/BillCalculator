@@ -9,7 +9,7 @@ library(gtable)
 library(scales)
 library(forcats)
 library(RateParser)
-library(ggmap)
+#library(ggmap)
 
 
 
@@ -35,18 +35,10 @@ theme_update(plot.title = element_text(hjust = 0.5))
 
 
 #Function to read in OWRS file
-fnAddress <- function(district, address){
-  district_all <- c("Beverly Hills City of - 239/07-03-2017.owrs", 
-                    "Santa Monica City of - 364/smc-2017-01-01.owrs", 
-                    "Moulton Niguel Water District - 147/mnwd-2016-01-01.owrs",
-                    "Amador Water Agency - 71/10-01-2017.owrs",
-                    "Apple Valley Ranchos Water Company - 379/AVRWC-2017-01-01.owrs",
-                    "Brentwood City of - 275/Brentwood-2016-07-01.owrs",
-                    "Burbank City of - 270/bc-2017-01-02.owrs",
-                    "California Water Service Company Antelope Valley - 406/CWSCAV-2017-01-01(1).owrs"
-  )
-  names(district_all) <- c("239", "364", "147", "71", "379", "275", "270", "406")
-  owrs_file <<- read_owrs_file(paste("California/", district_all[as.character(district)], sep = ""))
+fnAddress <- function(district){
+  filePath <- Sys.glob(file.path("California", paste0(district, '*', collapse ='')))
+  fileName <- list.files(filePath, pattern="*.owrs", full.name=TRUE)
+  owrs_file <<- read_owrs_file(fileName)
   #owrs_file <- read_owrs_file("examples/mnwd-2016-01-01.owrs")
   #mygeocode <- geocode(as.character(address), output = "latlon")
   return(district)
@@ -57,17 +49,9 @@ fnAddress <- function(district, address){
 #************One-shot Version********************  
 fnUseByTier <- function(df1, tablemode){
   ##########################################5 tier############################################### 
-  # district_all <- c("Beverly Hills City of - 239/07-03-2017.owrs", "Santa Monica City of - 364/smc-2017-01-01.owrs", "Moulton Niguel Water District - 147/mnwd-2016-01-01.owrs")
-  # names(district_all) <- c("239", "364", "147")
-  # owrs_file <- read_owrs_file(paste("California/", district_all[as.character(df1$district)], sep = ""))
-  #owrs_file <- read_owrs_file("examples/mnwd-2016-01-01.owrs")
   calced <- calculate_bill(df1, owrs_file)
   custclass <- df1$cust_class
   commodity_id <- as.character(owrs_file$rate_structure[[as.character(custclass)]]$commodity_charge)
-
-  # mygeocode <- geocode(as.character(df1$address), output = "latlon")
-  
-  #View(mygeocode)
   
   if((commodity_id == "Budget")  || (commodity_id == "Tiered")){
   len <- length(owrs_file$rate_structure[[as.character(custclass)]]$tier_starts)

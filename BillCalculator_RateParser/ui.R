@@ -11,14 +11,31 @@ shinyUI(fluidPage(
     sidebarPanel(
       imageOutput("logo", height = 120, width = 171),
       h5(em("Please refer to your bill for the required inputs")),
-      selectInput("cust_class", label = "Customer Class", choices = c("Single Family Residential" = "RESIDENTIAL_SINGLE",
-                                                                      "Multi Family Residential" = "RESIDENTIAL_MULTI"
-                                                                      #"Commercial" = "COMMERCIAL",
-                                                                      #"Commercial Non-Irrigation",
-                                                                      #"Irrigation" = "IRRIGATION"
-                                                                      #"Recycled"
-                                                                      #"Fire Protection",
-                                                                      #"Construction Meter"
+      
+      h4(""),
+      h5("Water District"),
+      selectInput("district", 
+                  label = NULL,
+                  choices = c("Beverly Hills City", 
+                              "Moulton Niguel Water District",
+                              "Santa Monica City",
+                              "Amador Water Agency",
+                              "Apple Valley Ranchos Water Company",
+                              "Brentwood City",
+                              "Burbank City",
+                              "California Water Service Company Antelope Valley"
+                  ),
+                  selected = "Moulton Niguel Water District"),
+      
+      h4(""),
+      h5("Customer Class"),
+      selectInput("cust_class", 
+                  label = NULL, 
+                  choices = c("Single Family Residential" = "RESIDENTIAL_SINGLE",
+                              "Multi Family Residential" = "RESIDENTIAL_MULTI"
+                              #"Commercial" = "COMMERCIAL",
+                              #"Commercial Non-Irrigation",
+                              #"Irrigation" = "IRRIGATION"
       )),
       conditionalPanel(
         condition = "input.cust_class == 'IRRIGATION'",
@@ -59,28 +76,11 @@ shinyUI(fluidPage(
       # numericInput("district", label = NULL, value = NULL, min = 0, max = 9999),
       
       
-      h4(""),
-      h5("Water District"),
-      #h6("(Typically 3/4 in. for residential customers)"),
-      selectInput("district", 
-                  label = NULL,
-                  choices = c("Beverly Hills City" = 239, 
-                              "Moulton Niguel Water District" = 147,
-                              "Santa Monica City" = 364,
-                              "Amador Water Agency" = 71,
-                              "Apple Valley Ranchos Water Company" = 379,
-                              "Brentwood City" = 275,
-                              "Burbank City" = 270,
-                              "California Water Service Company Antelope Valley" = 406
-                              ),
-                  selected = 147),
       
-      
-      
-      h4(""),
-      h5("Address"),
-      #h6("(1 BU = 748 gallons)"),
-      textInput("address", label = NULL, value = ""),
+      # h4(""),
+      # h5("Address"),
+      # #h6("(1 BU = 748 gallons)"),
+      # textInput("address", label = NULL, value = ""),
       
       
       h4(""),icon("tint"),
