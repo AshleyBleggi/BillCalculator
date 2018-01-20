@@ -5,54 +5,145 @@ library(DT)
 ET <- data.frame(Months = month.name,ETF = c(2.26,2.53,3.08,3.74,4.54,4.44,4.71,4.56,4.97,3.88,3.15,2.29))
 
 shinyUI(fluidPage(
-  tags$head(tags$style(
-    type="text/css",
-    "#logo img {max-width: 100%; width: 100%; height: auto}"
-  )),
-  
+  #tags$style(type="text/css", "body { overflow-y: scroll; }"),
+  #fluidRow(
   sidebarLayout(#column(3, wellPanel(
-    
     sidebarPanel(
-      imageOutput("logo", height = "100%", width = "100%"),
+      imageOutput("logo", height = 120, width = 171),
       h5(em("Please refer to your bill for the required inputs")),
       
-      h4(""),
-      h5("Water District"),
+      # h4(""),
+      # h5("Water District"),
       selectInput("district", 
-                  label = NULL,
-                  choices = c("Beverly Hills City", 
-                              "Moulton Niguel Water District",
-                              "Santa Monica City",
-                              "Amador Water Agency",
-                              "Apple Valley Ranchos Water Company",
-                              "Brentwood City",
-                              "Burbank City",
-                              "California Water Service Company Antelope Valley"
+                  label = h5("Water District"),
+                  choices = c(DistrictList
                   ),
                   selected = "Moulton Niguel Water District"),
       
-      h4(""),
-      h5("Customer Class"),
+      # h4(""),
+      # h5("Customer Class"),
       selectInput("cust_class", 
-                  label = NULL, 
+                  label = h5("Customer Class"), 
                   choices = c("Single Family Residential" = "RESIDENTIAL_SINGLE",
                               "Multi Family Residential" = "RESIDENTIAL_MULTI"
                               #"Commercial" = "COMMERCIAL",
                               #"Commercial Non-Irrigation",
                               #"Irrigation" = "IRRIGATION"
       )),
+      
       conditionalPanel(
-        condition = "input.cust_class == 'IRRIGATION'",
-        selectInput("water_type", label = "Water Type", choices = c("POTABLE",
-                                                                    "RECYCLED"
+        condition = "input.district == 'Alameda County Water District - 28'||input.district == 'San Bernardino City of - 2503'||input.district == 'Pasadena  City Of - 2136'",
+        selectInput("city_limits", label = h5("City Limits"), choices = c("inside_city",
+                                                                          "outside_city"
         )
         )),
+      
+      conditionalPanel(
+        condition = "input.district == 'Coachella Valley Water District - 661'",
+        numericInput("usage_month", label = h5("Usage Month (1-12)"),
+                     value = 1, min = 1, max = 12)
+        ),
+      
+      conditionalPanel(
+        condition = "input.district == 'Coachella Valley Water District - 661'",
+        numericInput("usage_zone", label = h5("Usage Zone (1-5)"),
+                     value = 1, min = 1, max = 5)
+      ),
+      
+      conditionalPanel(
+        condition = "input.district == 'Desert Water Agency - 832'",
+        numericInput("pressure_zone", label = h5("Pressure Zone (1-4)"),
+                     value = 1, min = 1, max = 4)
+      ),
+      
+      conditionalPanel(
+        condition = "input.district == 'Las Virgenes Municipal Water District - 1566'||input.district == 'San Bernardino City of - 2503'||input.district == 'Pittsburg  City of - 133'",
+        numericInput("elevation_zone", label = h5("Elevation Zone"),
+                     value = 1, min = 1, max = 6)
+      ),
+      
+      conditionalPanel(
+        condition = "input.district == 'Los Angeles Department of Water and Power - 1665'",
+        numericInput("lot_size_group", label = h5("Lot Size Group (1-5)"),
+                     value = 1, min = 1, max = 5)
+      ),
+      
+      conditionalPanel(
+        condition = "input.district == 'Los Angeles Department of Water and Power - 1665'",
+        selectInput("temperature_zone", label = h5("Temperature Zone"), choices = c("Low",
+                                                                                    "Medium",
+                                                                                    "High"
+        )
+        )),
+      
+      conditionalPanel(
+        condition = "input.district == 'Pittsburg  City of - 133'",
+        selectInput("senior", label = h5("Senior"), choices = c("yes",
+                                                                "no"
+        )
+        )),
+      
+      conditionalPanel(
+        condition = "input.district == 'Fresno City of - 1072'",
+        selectInput("water_font", label = h5("Water Font"), choices = c("city_delivered",
+                                                                        "private_wells"
+        )
+        )),
+      
+      conditionalPanel(
+        condition = "input.district == 'Long Beach City of - 1656'",
+        selectInput("tax_exemption", label = h5("Tax Exemption"), choices = c("granted",
+                                                                              "not_granted"
+        )
+        )),
+      
+      conditionalPanel(
+        condition = "input.district == 'El Dorado Irrigation District - Main - 934'",
+        selectInput("turbine_meter", label = h5("Turbine Meter"), choices = c("Yes",
+                                                                              "No"
+        )
+        )),
+      
+      conditionalPanel(
+        condition = "input.district == 'Huntington Beach City of - 1376'||input.district == 'Livermore  City of - 1631'",
+        selectInput("meter_type", label = h5("Meter Type"), choices = c("compound",
+                                                                        "FM",
+                                                                        "Turbine",
+                                                                        "Displacement"
+        )
+        )),
+      
+      conditionalPanel(
+        condition = "input.district == 'Long Beach City of - 1656'||input.district == 'Arcadia  City Of - 132'||input.district == 'Pasadena  City Of - 2136'||input.district == 'Los Angeles Department of Water and Power - 1665'",
+        selectInput("season", label = h5("Season"), choices = c("Winter",
+                                                                "Summer"
+        )
+        )),
+      
+      conditionalPanel(
+        condition = "input.district == 'Suburban Water Systems San Jose Hills - 16'",
+        selectInput("tariff_area", label = h5("Tariff Area"), choices = c(1,2,3)
+        )),
+      
+      conditionalPanel(
+        condition = "input.district == 'Suburban Water Systems San Jose Hills - 16'",
+        selectInput("block", label = h5("Block"), choices = c(1,2)
+        )),
+      
+      # conditionalPanel(
+      #   condition = "input.cust_class == 'IRRIGATION'",
+      #   selectInput("water_type", label = h5("Water Type"), choices = c("POTABLE",
+      #                                                                   "RECYCLED"
+      #   )
+      #   )),
       conditionalPanel(
         condition = "input.cust_class == 'RESIDENTIAL_SINGLE'||input.cust_class == 'RESIDENTIAL_MULTI'",
         icon("users"),
         numericInput("homesize", label = h5("Persons in Household"),
                      value = NULL, min = 0, max = 99)
       ),
+      
+      
       # conditionalPanel(
       #   condition = "input.cust_class == 'Commercial Non-Irrigation'",icon("tint"),
       #   numericInput("typical_usage", label = h5("Typical historical Usage (BU) for a Billing Period"),
@@ -72,14 +163,6 @@ shinyUI(fluidPage(
       h5("Irrigable Area (sq. ft.)"),
       #h6("(1 BU = 748 gallons)"),
       numericInput("irr_area", label = NULL, value = NULL, min = 0, max = 99999),
-      
-      
-      # h4(""),
-      # h5("Water District"),
-      # #h6("(1 BU = 748 gallons)"),
-      # numericInput("district", label = NULL, value = NULL, min = 0, max = 9999),
-      
-      
       
       # h4(""),
       # h5("Address"),

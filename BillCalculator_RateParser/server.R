@@ -54,9 +54,25 @@ shinyServer(
         days_in_period = input$bill_days, 
         irr_area = input$irr_area, 
         et_amount = input$et, 
-        meter_size = as.character(input$meter), cust_class = as.character(input$cust_class),
+        meter_size = as.character(input$meter), 
+        cust_class = as.character(input$cust_class),
         #typical_usage = input$typical_usage
-        water_type = as.character(input$water_type)
+        #water_type = as.character(input$water_type),
+        city_limits = input$city_limits,
+        usage_month = input$usage_month,
+        usage_zone = input$usage_zone,
+        pressure_zone = input$pressure_zone,
+        water_font = input$water_font,
+        elevation_zone = input$elevation_zone,
+        tax_exemption = input$tax_exemption,
+        season = input$season,
+        turbine_meter = input$turbine_meter,
+        meter_type = input$meter_type,
+        senior = input$senior,
+        tariff_area = input$tariff_area,
+        block = input$block,
+        lot_size_group = input$lot_size_group,
+        temperature_zone = input$temperature_zone
         #district = as.character(input$district),
         #address = input$address
       )
@@ -95,8 +111,24 @@ shinyServer(
         days_in_period = input$bill_days,
         irr_area = input$irr_area,
         et_amount = input$et,
-        meter_size = as.character(input$meter), cust_class = as.character(input$cust_class),
-        water_type = as.character(input$water_type)
+        meter_size = as.character(input$meter), 
+        cust_class = as.character(input$cust_class),
+        #water_type = as.character(input$water_type),
+        city_limits = input$city_limits,
+        usage_month = input$usage_month,
+        usage_zone = input$usage_zone,
+        pressure_zone = input$pressure_zone,
+        water_font = input$water_font,
+        elevation_zone = input$elevation_zone,
+        tax_exemption = input$tax_exemption,
+        season = input$season,
+        turbine_meter = input$turbine_meter,
+        meter_type = input$meter_type,
+        senior = input$senior,
+        tariff_area = input$tariff_area,
+        block = input$block,
+        lot_size_group = input$lot_size_group,
+        temperature_zone = input$temperature_zone
         #district = as.character(input$district),
         #address = input$address
       )
@@ -135,8 +167,24 @@ shinyServer(
         days_in_period = input$bill_days,
         irr_area = input$irr_area,
         et_amount = input$et,
-        meter_size = as.character(input$meter), cust_class = as.character(input$cust_class),
-        water_type = as.character(input$water_type)
+        meter_size = as.character(input$meter), 
+        cust_class = as.character(input$cust_class),
+        #water_type = as.character(input$water_type),
+        city_limits = input$city_limits,
+        usage_month = input$usage_month,
+        usage_zone = input$usage_zone,
+        pressure_zone = input$pressure_zone,
+        water_font = input$water_font,
+        elevation_zone = input$elevation_zone,
+        tax_exemption = input$tax_exemption,
+        season = input$season,
+        turbine_meter = input$turbine_meter,
+        meter_type = input$meter_type,
+        senior = input$senior,
+        tariff_area = input$tariff_area,
+        block = input$block,
+        lot_size_group = input$lot_size_group,
+        temperature_zone = input$temperature_zone
         #district = as.character(input$district),
         #address = input$address
       )
@@ -170,15 +218,30 @@ shinyServer(
         days_in_period = input$bill_days,
         irr_area = input$irr_area,
         et_amount = input$et,
-        meter_size = as.character(input$meter), cust_class = as.character(input$cust_class),
-        water_type = as.character(input$water_type)
+        meter_size = as.character(input$meter), 
+        cust_class = as.character(input$cust_class),
+        #water_type = as.character(input$water_type),
+        city_limits = input$city_limits,
+        usage_month = input$usage_month,
+        usage_zone = input$usage_zone,
+        pressure_zone = input$pressure_zone,
+        water_font = input$water_font,
+        elevation_zone = input$elevation_zone,
+        tax_exemption = input$tax_exemption,
+        season = input$season,
+        turbine_meter = input$turbine_meter,
+        meter_type = input$meter_type,
+        senior = input$senior,
+        tariff_area = input$tariff_area,
+        block = input$block,
+        lot_size_group = input$lot_size_group,
+        temperature_zone = input$temperature_zone
         #district = as.character(input$district),
         #address = input$address
       )
       
       
       datatable(fnUseByTier(input_df, tablemode = TRUE)
-                
                                
                 )
       
