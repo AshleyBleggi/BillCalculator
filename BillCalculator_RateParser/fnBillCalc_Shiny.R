@@ -57,25 +57,18 @@ standardize_OWRS_names <- function(owrs_file, current_class){
 }
 
 
-#Function to read in OWRS file
-fnAddress <- function(district){
-  filePath <- file.path("California", district)
-  #filePath <- Sys.glob(file.path("California", paste0(district, '*', collapse ='')))
-  fileName <- list.files(filePath, pattern="*.owrs", full.name=TRUE)
-  if (length(fileName) >= 1){
-    fileName <- tail(fileName, n=1)
-  }
-  owrs_file <<- read_owrs_file(fileName)
-  #owrs_file <- read_owrs_file("examples/mnwd-2016-01-01.owrs")
-  #mygeocode <- geocode(as.character(address), output = "latlon")
-  return(district)
-}
-
-
 #Function to Calculate Usage by Tier and Plot
 #************One-shot Version********************  
 fnUseByTier <- function(df1, tablemode){
   ##########################################tier###############################################
+  filePath <- file.path("California", df1$district)
+  fileName <- list.files(filePath, pattern="*.owrs", full.name=TRUE)
+  if (length(fileName) >= 1){
+    fileName <- tail(fileName, n=1)
+  }
+  owrs_file <- read_owrs_file(fileName)
+  
+  
   custclass <- df1$cust_class
   owrs_file <- standardize_OWRS_names(owrs_file, custclass)
   calced <- calculate_bill(df1, owrs_file)

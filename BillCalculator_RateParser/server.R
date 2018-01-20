@@ -6,20 +6,6 @@ source("fnBillCalc_Shiny.R")
 
 shinyServer(
   function(input, output) {
-    output$address <- renderText({
-      validate(
-        need(input$district, "-Please specify district")
-        # need(input$district, "-Please specify district") %then%
-        #   need(input$district < 9999 & input$usage > 0, "-Please enter district")
-
-        # need(input$address, "-Please specify address") %then%
-        #   need(!is.null(input$address), "-Please enter address")
-      )
-      district <- input$district
-      #address <- input$address
-      paste("District:", fnAddress(district))
-    })
-    
     #Usage plot
     output$use <- renderPlot({
       validate(
@@ -50,6 +36,7 @@ shinyServer(
         )
      
       input_df <- data.frame(
+        district <- input$district,
         usage_ccf = input$usage, hhsize = input$homesize,
         days_in_period = input$bill_days, 
         irr_area = input$irr_area, 
@@ -107,6 +94,7 @@ shinyServer(
           need(input$et < 99 & input$et > 0, "")
       )
       input_df <- data.frame(
+        district <- input$district,
         usage_ccf = input$usage, hhsize = input$homesize,
         days_in_period = input$bill_days,
         irr_area = input$irr_area,
@@ -163,6 +151,7 @@ shinyServer(
           need(input$et < 99 & input$et > 0, "")
       )
       input_df <- data.frame(
+        district <- input$district,
         usage_ccf = input$usage, hhsize = input$homesize,
         days_in_period = input$bill_days,
         irr_area = input$irr_area,
@@ -214,6 +203,7 @@ shinyServer(
           need(input$et < 99 & input$et > 0, "")
       )
       input_df <- data.frame(
+        district <- input$district,
         usage_ccf = input$usage, hhsize = input$homesize,
         days_in_period = input$bill_days,
         irr_area = input$irr_area,

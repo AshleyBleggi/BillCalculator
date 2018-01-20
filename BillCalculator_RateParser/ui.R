@@ -12,16 +12,12 @@ shinyUI(fluidPage(
       imageOutput("logo", height = 120, width = 171),
       h5(em("Please refer to your bill for the required inputs")),
       
-      # h4(""),
-      # h5("Water District"),
       selectInput("district", 
                   label = h5("Water District"),
                   choices = c(DistrictList
                   ),
                   selected = "Moulton Niguel Water District"),
       
-      # h4(""),
-      # h5("Customer Class"),
       selectInput("cust_class", 
                   label = h5("Customer Class"), 
                   choices = c("Single Family Residential" = "RESIDENTIAL_SINGLE",
@@ -227,7 +223,6 @@ shinyUI(fluidPage(
             style = "font-family: 'Arial Narrow'; margin-top: 0em")),
       splitLayout(cellWidths = c("43%", "43%", "14%"), plotOutput("use"), plotOutput("charge"),plotOutput("legend")),
       #plotOutput("use"),
-      textOutput("address"),
       dataTableOutput("vol_table")
       #dataTableOutput("bill_table")
       ,width = 9)
