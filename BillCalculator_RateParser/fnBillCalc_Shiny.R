@@ -77,10 +77,9 @@ fnAddress <- function(district){
 fnUseByTier <- function(df1, tablemode){
   ##########################################tier###############################################
   custclass <- df1$cust_class
-  #owrs_file <- standardize_OWRS_names(owrs_file, custclass)
+  owrs_file <- standardize_OWRS_names(owrs_file, custclass)
   calced <- calculate_bill(df1, owrs_file)
   commodity_id <- as.character(owrs_file$rate_structure[[as.character(custclass)]]$commodity_charge)
-  #View(df1)
   
   if((commodity_id == "Budget")  || (commodity_id == "Tiered")){
     tierstart <- owrs_file$rate_structure[[as.character(custclass)]]$tier_starts
@@ -95,7 +94,6 @@ fnUseByTier <- function(df1, tablemode){
     else{
       len <- length(tierstart)
     }
-  #len <- length(owrs_file$rate_structure[[as.character(custclass)]]$tier_starts)
     ##******Initial Use and Rate Arrays******
     #Tier Use and Rate Arrays
     tierAll = c("Tier 1","Tier 2","Tier 3","Tier 4","Tier 5","Tier 6")
