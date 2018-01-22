@@ -16,6 +16,10 @@ The MNWD_BillCalculator folder contains code from one specific utility. The goal
 
 ARGO team lead: Christopher Tull ( chris@argolabs.org ) 
 
+## Progress to Date
+
+RateParser was incorporated in the bill calculator tool. Selection element was added for users to specify their water district. Based on the selected district, the most recent OWRS information will be retrieved. The tool will calculate commodity charge, total bill, water use and charges in each tier shown in plots and table. Bill calculator is built compatible with different rate structures.
+
 ## Resources
 
 General background information on water rate design [here](https://github.com/California-Data-Collaborative/Open-Water-Rate-Specification/blob/master/AWE-Building-a-better-RateStructure.pdf). Especially pages 24+
