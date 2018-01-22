@@ -37,14 +37,13 @@ shinyServer(
      
       input_df <- data.frame(
         district <- input$district,
-        usage_ccf = input$usage, hhsize = input$homesize,
+        usage_ccf = input$usage, 
+        hhsize = input$homesize,
         days_in_period = input$bill_days, 
         irr_area = input$irr_area, 
         et_amount = input$et, 
-        meter_size = as.character(input$meter), 
-        cust_class = as.character(input$cust_class),
-        #typical_usage = input$typical_usage
-        #water_type = as.character(input$water_type),
+        meter_size = input$meter, 
+        cust_class = input$cust_class,
         city_limits = input$city_limits,
         usage_month = input$usage_month,
         usage_zone = input$usage_zone,
@@ -60,7 +59,6 @@ shinyServer(
         block = input$block,
         lot_size_group = input$lot_size_group,
         temperature_zone = input$temperature_zone
-        #district = as.character(input$district),
         #address = input$address
       )
      
@@ -95,13 +93,13 @@ shinyServer(
       )
       input_df <- data.frame(
         district <- input$district,
-        usage_ccf = input$usage, hhsize = input$homesize,
+        usage_ccf = input$usage, 
+        hhsize = input$homesize,
         days_in_period = input$bill_days,
         irr_area = input$irr_area,
         et_amount = input$et,
-        meter_size = as.character(input$meter), 
-        cust_class = as.character(input$cust_class),
-        #water_type = as.character(input$water_type),
+        meter_size = input$meter, 
+        cust_class = input$cust_class,
         city_limits = input$city_limits,
         usage_month = input$usage_month,
         usage_zone = input$usage_zone,
@@ -117,8 +115,6 @@ shinyServer(
         block = input$block,
         lot_size_group = input$lot_size_group,
         temperature_zone = input$temperature_zone
-        #district = as.character(input$district),
-        #address = input$address
       )
       #call plots
       plotList<-fnUseByTier(input_df, tablemode = FALSE)
@@ -152,13 +148,13 @@ shinyServer(
       )
       input_df <- data.frame(
         district <- input$district,
-        usage_ccf = input$usage, hhsize = input$homesize,
+        usage_ccf = input$usage, 
+        hhsize = input$homesize,
         days_in_period = input$bill_days,
         irr_area = input$irr_area,
         et_amount = input$et,
-        meter_size = as.character(input$meter), 
-        cust_class = as.character(input$cust_class),
-        #water_type = as.character(input$water_type),
+        meter_size = input$meter, 
+        cust_class = input$cust_class,
         city_limits = input$city_limits,
         usage_month = input$usage_month,
         usage_zone = input$usage_zone,
@@ -174,8 +170,6 @@ shinyServer(
         block = input$block,
         lot_size_group = input$lot_size_group,
         temperature_zone = input$temperature_zone
-        #district = as.character(input$district),
-        #address = input$address
       )
       plotList<-fnUseByTier(input_df, tablemode = FALSE)
       plotList[[3]]
@@ -204,13 +198,13 @@ shinyServer(
       )
       input_df <- data.frame(
         district <- input$district,
-        usage_ccf = input$usage, hhsize = input$homesize,
+        usage_ccf = input$usage, 
+        hhsize = input$homesize,
         days_in_period = input$bill_days,
         irr_area = input$irr_area,
         et_amount = input$et,
-        meter_size = as.character(input$meter), 
-        cust_class = as.character(input$cust_class),
-        #water_type = as.character(input$water_type),
+        meter_size = input$meter, 
+        cust_class = input$cust_class,
         city_limits = input$city_limits,
         usage_month = input$usage_month,
         usage_zone = input$usage_zone,
@@ -226,8 +220,6 @@ shinyServer(
         block = input$block,
         lot_size_group = input$lot_size_group,
         temperature_zone = input$temperature_zone
-        #district = as.character(input$district),
-        #address = input$address
       )
       
       
