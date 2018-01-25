@@ -28,7 +28,7 @@ shinyUI(fluidPage(
       )),
       
       conditionalPanel(
-        condition = "input.district == 'Alameda County Water District - 28'||input.district == 'San Bernardino City of - 2503'||input.district == 'Pasadena  City Of - 2136'",
+        condition = "input.district == 'Alameda County Water District - 28'||input.district == 'San Bernardino City of - 2503'||input.district == 'Pasadena  City Of - 2136'||input.district == 'Los Angeles Department of Water and Power - 1665'",
         selectInput("city_limits", label = h5("City Limits"), choices = c("inside_city",
                                                                           "outside_city"
         )
