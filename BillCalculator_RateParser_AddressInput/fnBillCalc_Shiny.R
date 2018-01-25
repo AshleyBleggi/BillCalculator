@@ -65,6 +65,7 @@ standardize_OWRS_names <- function(owrs_file, current_class){
 #************One-shot Version********************  
 fnUseByTier <- function(df1, tablemode, points_add){
   ##########################################tier###############################################
+  # View(points_add)
   # points_add <- geocode(df1$address, output = "latlon")
   districtshp <- readOGR("shp", "water_district",verbose=FALSE)
   points_sp <- SpatialPoints(points_add, proj4string=CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))

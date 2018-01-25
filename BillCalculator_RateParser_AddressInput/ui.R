@@ -22,6 +22,8 @@ shinyUI(fluidPage(
       h5("Address"),
       textInput("address", label = NULL, value = ""),
       
+      actionButton("go", label = "Update"),
+      
       selectInput("cust_class", 
                   label = h5("Customer Class"), 
                   choices = c("Single Family Residential" = "RESIDENTIAL_SINGLE",
