@@ -72,10 +72,10 @@ shinyServer(
       #call plots
       plotList<-fnUseByTier(input_df, tablemode = FALSE, data())
       plotList[[1]]
-    }
-    # height = "auto",
-    # #height = 650,
-    # width = "auto"
+    },
+    height = "auto",
+    #height = 650,
+    width = "auto"
     )
     
     #Charges plot
@@ -129,10 +129,10 @@ shinyServer(
       #call plots
       plotList<-fnUseByTier(input_df, tablemode = FALSE, data())
       plotList[[2]]
-    }
-    # height = "auto",
-    # #height = 650,
-    # width = "auto"
+    },
+    height = "auto",
+    #height = 650,
+    width = "auto"
     )
 
     #Legend
