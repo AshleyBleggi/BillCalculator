@@ -109,42 +109,6 @@ shinyServer(
       #           ))
     })
     
-    # #call bill table
-    # output$bill_table <- renderDataTable({
-    #   validate(
-    #     need(input$usage, "") %then%
-    #       need(input$usage < 999 & input$usage > 0, ""),
-    # 
-    #     need(input$bill_days, "") %then%
-    #       need(input$bill_days < 99 & input$bill_days > 0, ""),
-    # 
-    #     if(input$cust_class %in% c("Single Family Residential","Multi Family Residential")){
-    #     need(input$homesize, "")} %then%
-    #       need(input$homesize < 99 & input$homesize > 0, ""),
-    # 
-    #     if(input$cust_class != "Commercial Non-Irrigation"){
-    #       need(input$irr_area, "") %then%
-    #         need(input$irr_area < 99999 & input$irr_area > 0, "")}
-    #     else{
-    #       need(input$typical_usage,"") %then%
-    #         need(input$typical_usage < 999 & input$typical_usage > 0, "")},
-    # 
-    #     need(input$et, "") %then%
-    #       need(input$et < 99 & input$et > 0, "")
-    #     )
-    #   datatable(fnUseByTier(usage = input$usage, gpcd = 60, hh_size = input$homesize,
-    #               days = input$bill_days, conv_gal2ccf = 748,
-    #               lot_size = input$irr_area, plant_factor = 0.7,
-    #               evapo_trans = input$et, conv_in2gal = 0.62,
-    #               meter_selection = input$meter, cust_class = input$cust_class, commercial_class = input$commercial_class,
-    #               tablemode = 3, typical_usage = input$typical_usage),extensions = 'Buttons',
-    # 
-    #   options = list(pageLength = 10, columnDefs = list(list(className = 'dt-center',
-    #                                                          targets = 1:3)),dom = 'Bfrtip',
-    #                  buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
-    # 
-    #   ))
-    # })
     
     #Logo
     output$logo <- renderImage({
@@ -157,27 +121,5 @@ shinyServer(
       ))
     }, deleteFile = FALSE
     )
-    #call budgets
-    # output$budget <- renderText({
-    #   validate(
-    #     need(input$cust_class, ""),
-    #     need(input$usage, ""),
-    #     #need(input$homesize, ""),
-    #     need(input$bill_days, ""),
-    #     #need(input$irr_area, ""),
-    #     need(input$et, "")
-    #   )      
-    #   # paste("Your Current calculated water budget = ",
-    #   #              fnBudget(usage = input$usage, gpcd = 60, hh_size = input$homesize,
-    #   #                       days = input$bill_days, conv_gal2ccf = 748,
-    #   #                       lot_size = input$irr_area, plant_factor = 0.7,
-    #   #                       evapo_trans = input$et, conv_in2gal = 0.62,
-    #   #                       meter_selection = input$meter, cust_class = input$cust_class),
-    #   #              " BU")
-    #   fnBudget(usage = input$usage, gpcd = 60, hh_size = input$homesize,
-    #            days = input$bill_days, conv_gal2ccf = 748,
-    #            lot_size = input$irr_area, plant_factor = 0.7,
-    #            evapo_trans = input$et, conv_in2gal = 0.62,
-    #            meter_selection = input$meter, cust_class = input$cust_class, typical_usage = input$typical_usage)
-    # })
+    
   })

@@ -225,21 +225,6 @@ fnUseByTier <- function(df1, points_add){
                              "Current Charge")
     
     
-    # bill_table <- data.frame(Bill.Components = c("Water Usage Charge","Basic Water Charge","Basic Sewer Charge",
-    #                                     "Per Person Sewer Charge","Total Bill"),
-    #                          Current = paste0("$",
-    #                                          formatC(as.numeric(current_charges),
-    #                                                  format="f",
-    #                                                  digits=2,
-    #                                                  big.mark=",")),
-    #                          Proposed = paste0("$",
-    #                                            formatC(as.numeric(proposed_charges),
-    #                                                    format="f",
-    #                                                    digits=2,
-    #                                                    big.mark=",")))
-    # colnames(bill_table) <- c("Bill Components","Total Current Charges",
-    #                           "Total Proposed Charges")
-    
     #Fn ouputs plot/table
     plotList<-list(p1,p2,plegd,vol_table)
     return(plotList)
@@ -276,57 +261,4 @@ fnUseByTier <- function(df1, points_add){
   }
 }
 
-# #Fn to Calculate and Display Current and Proposed Budgets
-# #************Water Budget Text********************  
-# fnBudget <- function(usage = 70, gpcd = 60, hh_size = 4, days = 30, conv_gal2ccf = 748,
-#                      lot_size = 6000, plant_factor = 0.7, evapo_trans = 3.43, conv_in2gal = 0.62,
-#                      meter_selection = 0.625, cust_class, typical_usage){
-#   
-#   if(cust_class == "Single Family Residential"|cust_class == "Multi Family Residential"){
-#     
-#     indoor_budget <- round(gpcd*hh_size*days/conv_gal2ccf, digits = 0)
-#     new_indoor_budget <- round(55*hh_size*days/conv_gal2ccf, digits = 0)
-#     outdoor_budget <- round(lot_size*plant_factor*evapo_trans*conv_in2gal/conv_gal2ccf, digits = 0)
-#     
-#     msg <- paste("Your Current Calculated Water Budget = ",
-#                  round(sum(indoor_budget,outdoor_budget), digits = 0)," BU and",
-#                  "Your Proposed Water Budget = ",
-#                  round(sum(new_indoor_budget,outdoor_budget), digits = 0)," BU")
-#     return(noquote(strsplit(msg, "\n")[[1]]))
-#     
-#     
-#   }else if(cust_class == "Commercial"|cust_class == "Irrigation"){
-#     
-#     budget <- round(lot_size*plant_factor*evapo_trans*conv_in2gal/conv_gal2ccf, digits = 0)
-#     
-#     msg <- paste("Your Current Calculated Water Budget = ",
-#                  round(budget, digits = 0)," BU and",
-#                  "Your Proposed Water Budget = ",
-#                  round(budget, digits = 0)," BU")
-#     return(noquote(strsplit(msg, "\n")[[1]]))
-#     
-#   }else if(cust_class == "Recycled"){ #Recycled Budget
-#     
-#     plant_factor <- 0.8
-#     
-#     budget <- round(lot_size*plant_factor*evapo_trans*conv_in2gal/conv_gal2ccf, digits = 0)
-#     
-#     msg <- paste("Your Current Calculated Water Budget = ",
-#                  round(budget, digits = 0)," BU and",
-#                  "Your Proposed Water Budget = ",
-#                  round(budget, digits = 0)," BU")
-#     return(noquote(strsplit(msg, "\n")[[1]]))
-#     
-#   }else if(cust_class == "Commercial Non-Irrigation"){ #Commercial Non-Irrigation Budget
-#     
-#     budget <- round((typical_usage+usage)/2, digits = 0)
-#     
-#     msg <- paste("Your Current Calculated Water Budget = ",
-#                  round(budget, digits = 0)," BU and",
-#                  "Your Proposed Water Budget = ",
-#                  round(budget, digits = 0)," BU")
-#     return(noquote(strsplit(msg, "\n")[[1]]))
-#   }
-# }
-# 
 # #************************************* 

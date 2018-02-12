@@ -181,14 +181,6 @@ shinyUI(fluidPage(
       h4(""),icon("leaf"),
       h5("Evapotranspiration"),
       h6("(This month's average ET - ",ET$ETF[ET$Months == months.Date(Sys.Date())],")"),
-      #       h6("(ET varies daily by microzone. Your water budget is calculated based on the actual ET during the billing period; 
-      #         however, it is possible to estimate your water budget based on historical ET. 
-      #         The historical average ET values for the MNWD service area are:\n
-      #         Jan = 2.17; Feb = 2.80; Mar=3.72;\n
-      #         Apr=4.80; May=5.27; Jun=5.40;\n
-      #         Jul=5.89; Aug=5.58; Sep=5.10;\n
-      #         Oct=4.03; Nov=2.70; Dec=2.17
-      #       )"),
       numericInput("et", label = NULL, value = 5, min = 0, max = 99),
       
       h4(""),
