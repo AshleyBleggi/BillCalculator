@@ -6,3 +6,4 @@
 
 # ignore OWRS file
 BillCalculator_RateParser/California/*
+BillCalculator_RateParser_AddressInput/California/*
