@@ -5,11 +5,14 @@ library(DT)
 ET <- data.frame(Months = month.name,ETF = c(2.26,2.53,3.08,3.74,4.54,4.44,4.71,4.56,4.97,3.88,3.15,2.29))
 
 shinyUI(fluidPage(
-  #tags$style(type="text/css", "body { overflow-y: scroll; }"),
-  #fluidRow(
+  tags$head(tags$style(
+    type="text/css",
+    "#logo img {max-width: 100%; width: 100%; height: auto}"
+  )),
+  
   sidebarLayout(#column(3, wellPanel(
     sidebarPanel(
-      imageOutput("logo", height = 120, width = 171),
+      tags$a(imageOutput("logo", height = "100%", width = "100%"), href="http://californiadatacollaborative.org/"),
       h5(em("Please refer to your bill for the required inputs")),
       
       # selectInput("district",
@@ -139,7 +142,7 @@ shinyUI(fluidPage(
         condition = "input.cust_class == 'RESIDENTIAL_SINGLE'||input.cust_class == 'RESIDENTIAL_MULTI'",
         icon("users"),
         numericInput("homesize", label = h5("Persons in Household"),
-                     value = NULL, min = 0, max = 99)
+                     value = 4, min = 0, max = 99)
       ),
       
       
@@ -161,31 +164,25 @@ shinyUI(fluidPage(
       h4(""),icon("tree"),
       h5("Irrigable Area (sq. ft.)"),
       #h6("(1 BU = 748 gallons)"),
-      numericInput("irr_area", label = NULL, value = NULL, min = 0, max = 99999),
+      numericInput("irr_area", label = NULL, value = 2000, min = 0, max = 99999),
       
       
       h4(""),icon("tint"),
       h5("Billing Units Used"),
       h6("(1 BU = 748 gallons)"),
-      numericInput("usage", label = NULL, value = NULL, min = 0, max = 999),
+      numericInput("usage", label = NULL, value = 15, min = 0, max = 999),
+      
       h4(""),icon("calendar"),
       h5("Days in Billing Cycle"),
       h6("(Typically 28-35 days)"),
-      numericInput("bill_days", label = NULL, value = NULL, min = 0, max = 99),
+      numericInput("bill_days", label = NULL, value = 30, min = 0, max = 99),
       
       
       h4(""),icon("leaf"),
       h5("Evapotranspiration"),
       h6("(This month's average ET - ",ET$ETF[ET$Months == months.Date(Sys.Date())],")"),
-      #       h6("(ET varies daily by microzone. Your water budget is calculated based on the actual ET during the billing period; 
-      #         however, it is possible to estimate your water budget based on historical ET. 
-      #         The historical average ET values for the MNWD service area are:\n
-      #         Jan = 2.17; Feb = 2.80; Mar=3.72;\n
-      #         Apr=4.80; May=5.27; Jun=5.40;\n
-      #         Jul=5.89; Aug=5.58; Sep=5.10;\n
-      #         Oct=4.03; Nov=2.70; Dec=2.17
-      #       )"),
-      numericInput("et", label = NULL, value = NULL, min = 0, max = 99),
+      numericInput("et", label = NULL, value = 5, min = 0, max = 99),
+      
       h4(""),
       h5("Meter Size"),
       h6("(Typically 3/4 in. for residential customers)"),
