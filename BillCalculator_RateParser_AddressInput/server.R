@@ -7,16 +7,16 @@ source("fnBillCalc_Shiny.R")
 shinyServer(
   function(input, output) {
     
-    data <- eventReactive(input$go,{
-      geocode(input$address, output = "latlon")
+    geocode_data <- eventReactive(input$go,{
+        # validate(need(input$address, "-Please specify address"))
+        geocode(input$address, output = "latlon")
       }
     )
     
-    #Usage plot
-    output$use <- renderPlot({
+    use_by_tier_data <- reactive({
       validate(
         #need(input$district, ""),
-        need(input$address, "-Please specify address"),
+        # need(input$address, "-Please specify address"),
         
         need(input$usage, "-Please specify water usage") %then%
           need(input$usage < 999 & input$usage > 0, "-Please enter usage between 0 and 999 BU"),
@@ -29,7 +29,7 @@ shinyServer(
           need(input$homesize < 99 & input$homesize > 0, "-Please enter a household size less than 99"),
         
         need(input$irr_area, "-Please specify the irrigable area associated with your account") %then%
-            need(input$irr_area < 99999 & input$irr_area > 0, "-Please enter an irrigable area less than 99,999 and greater than 0"),
+          need(input$irr_area < 99999 & input$irr_area > 0, "-Please enter an irrigable area less than 99,999 and greater than 0"),
         
         need(input$et, "-Please specify the evapotranspiration factor associated with this bill:
              ET varies daily by microzone. There are 110 microzones within the MNWD service area.
@@ -40,8 +40,8 @@ shinyServer(
              May=4.54; Jun=4.44; Jul=4.71; Aug=4.56;
              Sep=4.97; Oct=3.88; Nov=3.15; Dec=2.29") %then% 
           need(input$et < 99 & input$et > 0, "-Please enter an evapotranspiration factor less than 99")
-        )
-     
+      )
+      
       input_df <- data.frame(
         usage_ccf = input$usage, 
         hhsize = input$homesize,
@@ -64,14 +64,17 @@ shinyServer(
         tariff_area = input$tariff_area,
         block = input$block,
         lot_size_group = input$lot_size_group,
-        temperature_zone = input$temperature_zone,
-        #district <- input$district,
-        address = input$address
+        temperature_zone = input$temperature_zone
       )
-     
+      
       #call plots
-      plotList<-fnUseByTier(input_df, tablemode = FALSE, data())
-      plotList[[1]]
+      plotList<-fnUseByTier(input_df, geocode_data())
+      plotList
+    })
+    
+    #Usage plot
+    output$use <- renderPlot({
+      use_by_tier_data()[[1]]
     },
     height = "auto",
     #height = 650,
@@ -80,55 +83,7 @@ shinyServer(
     
     #Charges plot
     output$charge<-renderPlot({
-      validate(
-        #need(input$district, ""),
-        need(input$address, ""),
-        
-        need(input$usage, "") %then%
-          need(input$usage < 999 & input$usage > 0, ""),
-
-        need(input$bill_days, "") %then%
-          need(input$bill_days < 99 & input$bill_days > 0, ""),
-
-        if(input$cust_class %in% c("Single Family Residential","Multi Family Residential")){
-          need(input$homesize, "")} %then%
-          need(input$homesize < 99 & input$homesize > 0, ""),
-
-        need(input$irr_area, "") %then%
-          need(input$irr_area < 99999 & input$irr_area > 0, ""),
-
-        need(input$et, "") %then%
-          need(input$et < 99 & input$et > 0, "")
-      )
-      input_df <- data.frame(
-        usage_ccf = input$usage, 
-        hhsize = input$homesize,
-        days_in_period = input$bill_days,
-        irr_area = input$irr_area,
-        et_amount = input$et,
-        meter_size = input$meter, 
-        cust_class = input$cust_class,
-        city_limits = input$city_limits,
-        usage_month = input$usage_month,
-        usage_zone = input$usage_zone,
-        pressure_zone = input$pressure_zone,
-        water_font = input$water_font,
-        elevation_zone = input$elevation_zone,
-        tax_exemption = input$tax_exemption,
-        season = input$season,
-        turbine_meter = input$turbine_meter,
-        meter_type = input$meter_type,
-        senior = input$senior,
-        tariff_area = input$tariff_area,
-        block = input$block,
-        lot_size_group = input$lot_size_group,
-        temperature_zone = input$temperature_zone,
-        #district <- input$district,
-        address = input$address
-      )
-      #call plots
-      plotList<-fnUseByTier(input_df, tablemode = FALSE, data())
-      plotList[[2]]
+      use_by_tier_data()[[2]]
     },
     height = "auto",
     #height = 650,
@@ -137,110 +92,12 @@ shinyServer(
 
     #Legend
     output$legend<-renderPlot({
-      #call plots
-      validate(
-        #need(input$district, ""),
-        need(input$address, ""),
-        
-        need(input$usage, "") %then%
-          need(input$usage < 999 & input$usage > 0, ""),
-
-        need(input$bill_days, "") %then%
-          need(input$bill_days < 99 & input$bill_days > 0, ""),
-
-        if(input$cust_class %in% c("Single Family Residential","Multi Family Residential")){
-          need(input$homesize, "")} %then%
-          need(input$homesize < 99 & input$homesize > 0, ""),
-
-        need(input$irr_area, "") %then%
-          need(input$irr_area < 99999 & input$irr_area > 0, ""),
-
-        need(input$et, "") %then%
-          need(input$et < 99 & input$et > 0, "")
-      )
-      input_df <- data.frame(
-        usage_ccf = input$usage, 
-        hhsize = input$homesize,
-        days_in_period = input$bill_days,
-        irr_area = input$irr_area,
-        et_amount = input$et,
-        meter_size = input$meter, 
-        cust_class = input$cust_class,
-        city_limits = input$city_limits,
-        usage_month = input$usage_month,
-        usage_zone = input$usage_zone,
-        pressure_zone = input$pressure_zone,
-        water_font = input$water_font,
-        elevation_zone = input$elevation_zone,
-        tax_exemption = input$tax_exemption,
-        season = input$season,
-        turbine_meter = input$turbine_meter,
-        meter_type = input$meter_type,
-        senior = input$senior,
-        tariff_area = input$tariff_area,
-        block = input$block,
-        lot_size_group = input$lot_size_group,
-        temperature_zone = input$temperature_zone,
-        #district <- input$district,
-        address = input$address
-      )
-      plotList<-fnUseByTier(input_df, tablemode = FALSE, data())
-      plotList[[3]]
+      use_by_tier_data()[[3]]
     })
 
     #call vol table
     output$vol_table <- renderDataTable({
-      validate(
-        #need(input$district, ""),
-        need(input$address, ""),
-        
-        need(input$usage, "") %then%
-          need(input$usage < 999 & input$usage > 0, ""),
-
-        need(input$bill_days, "") %then%
-          need(input$bill_days < 99 & input$bill_days > 0, ""),
-
-        if(input$cust_class %in% c("Single Family Residential","Multi Family Residential")){
-          need(input$homesize, "")} %then%
-          need(input$homesize < 99 & input$homesize > 0, ""),
-
-        need(input$irr_area, "") %then%
-          need(input$irr_area < 99999 & input$irr_area > 0, ""),
-
-        need(input$et, "") %then%
-          need(input$et < 99 & input$et > 0, "")
-      )
-      input_df <- data.frame(
-        usage_ccf = input$usage, 
-        hhsize = input$homesize,
-        days_in_period = input$bill_days,
-        irr_area = input$irr_area,
-        et_amount = input$et,
-        meter_size = input$meter, 
-        cust_class = input$cust_class,
-        city_limits = input$city_limits,
-        usage_month = input$usage_month,
-        usage_zone = input$usage_zone,
-        pressure_zone = input$pressure_zone,
-        water_font = input$water_font,
-        elevation_zone = input$elevation_zone,
-        tax_exemption = input$tax_exemption,
-        season = input$season,
-        turbine_meter = input$turbine_meter,
-        meter_type = input$meter_type,
-        senior = input$senior,
-        tariff_area = input$tariff_area,
-        block = input$block,
-        lot_size_group = input$lot_size_group,
-        temperature_zone = input$temperature_zone,
-        #district <- input$district,
-        address = input$address
-      )
-      
-      
-      datatable(fnUseByTier(input_df, tablemode = TRUE, data())
-                               
-                )
+      datatable(use_by_tier_data()[[4]])
       
       
       # datatable(fnUseByTier(input_df, tablemode = TRUE),#extensions = 'Buttons',
@@ -250,9 +107,8 @@ shinyServer(
       #                          #buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
       # 
       #           ))
-
-
     })
+    
     # #call bill table
     # output$bill_table <- renderDataTable({
     #   validate(

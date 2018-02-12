@@ -63,15 +63,13 @@ standardize_OWRS_names <- function(owrs_file, current_class){
 
 #Function to Calculate Usage by Tier and Plot
 #************One-shot Version********************  
-fnUseByTier <- function(df1, tablemode, points_add){
+fnUseByTier <- function(df1, points_add){
   ##########################################tier###############################################
   # View(points_add)
-  # points_add <- geocode(df1$address, output = "latlon")
   districtshp <- readOGR("shp", "water_district",verbose=FALSE)
   points_sp <- SpatialPoints(points_add, proj4string=CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
   df_add <- over(points_sp, districtshp)
   filePath <- Sys.glob(file.path("California", paste0(df_add$Agency_Nam, '*', collapse ='')))
-  
   
   #filePath <- file.path("California", df1$district)
   fileName <- list.files(filePath, pattern="*.owrs", full.name=TRUE)
@@ -243,9 +241,8 @@ fnUseByTier <- function(df1, tablemode, points_add){
     #                           "Total Proposed Charges")
     
     #Fn ouputs plot/table
-    if(tablemode == FALSE){
-      plotList<-list(p1,p2,plegd)
-      return(plotList)
+    plotList<-list(p1,p2,plegd,vol_table)
+    return(plotList)
       #grid.arrange(arrangeGrob(p1, p2,plegd, ncol = 3, widths = unit(c(2/5,2/5,1/5),"npc")),
        #nullGrob()
                    #arrangeGrob(t1, nullGrob(),t2, ncol = 1, heights = unit(c(4/10,2/10,4/10),"npc")),
@@ -255,9 +252,6 @@ fnUseByTier <- function(df1, tablemode, points_add){
                    #nrow=4, ncol=1,
                    #heights=c(3, 1/8, 3, 1)
        #)
-    }else if(tablemode == TRUE){
-      vol_table
-    }  
     # }else
     #   bill_table
 
@@ -277,12 +271,8 @@ fnUseByTier <- function(df1, tablemode, points_add){
     )
     colnames(vol_table) <- c("Usage",
                              "Current Charge")
-    if(tablemode == FALSE){
-      plotList<-list(NULL,NULL,NULL)
-      return(plotList)
-    }else if(tablemode == TRUE){
-      vol_table
-    }  
+    plotList<-list(NULL,NULL,NULL, vol_table)
+    return(plotList)
   }
 }
 
