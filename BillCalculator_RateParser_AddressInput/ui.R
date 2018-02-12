@@ -5,11 +5,14 @@ library(DT)
 ET <- data.frame(Months = month.name,ETF = c(2.26,2.53,3.08,3.74,4.54,4.44,4.71,4.56,4.97,3.88,3.15,2.29))
 
 shinyUI(fluidPage(
-  #tags$style(type="text/css", "body { overflow-y: scroll; }"),
-  #fluidRow(
+  tags$head(tags$style(
+    type="text/css",
+    "#logo img {max-width: 100%; width: 100%; height: auto}"
+  )),
+  
   sidebarLayout(#column(3, wellPanel(
     sidebarPanel(
-      imageOutput("logo", height = 120, width = 171),
+      tags$a(imageOutput("logo", height = "100%", width = "100%"), href="http://californiadatacollaborative.org/"),
       h5(em("Please refer to your bill for the required inputs")),
       
       # selectInput("district",
