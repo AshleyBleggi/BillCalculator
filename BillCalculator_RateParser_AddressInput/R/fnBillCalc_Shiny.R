@@ -15,6 +15,7 @@ library(maptools)
 library(rgdal)
 library(ggmap)
 
+source("R/plots.R")
 
 
 #library(DT)
@@ -88,44 +89,45 @@ fnUseByTier <- function(df1, points_add){
     tierstart <- owrs_file$rate_structure[[as.character(custclass)]]$tier_starts
     if(class(tierstart) == "list"){
       if(!is.null(tierstart$values)){
-        len <- length(tierstart$values[[1]])
+        num_tiers <- length(tierstart$values[[1]])
       }
       else{
-        len <- length(tierstart)
+        num_tiers <- length(tierstart)
       }
     }
     else{
-      len <- length(tierstart)
+      num_tiers <- length(tierstart)
     }
+    
     ##******Initial Use and Rate Arrays******
     #Tier Use and Rate Arrays
     tierAll = c("Tier 1","Tier 2","Tier 3","Tier 4","Tier 5","Tier 6")
     inputs <- data.frame(
-      tiers = c(tierAll[1:len]),
-      tier_use = numeric(len),
-      tier_rates = numeric(len),  # Stage 1 Rates
-      tier_charge =  numeric(len)
+      tiers = c(tierAll[1:num_tiers]),
+      tier_use = numeric(num_tiers),
+      tier_rates = numeric(num_tiers),  # Stage 1 Rates
+      tier_charge =  numeric(num_tiers)
     )
-    rownames(inputs) <- tierAll[1:len]
+    rownames(inputs) <- tierAll[1:num_tiers]
     
     ##*************************************   
     #determine use per tier given customer usage
     
     
-    for(i in c(1:len)) {
+    for(i in c(1:num_tiers)) {
       col_name <- sprintf("X%s", i)
       inputs$tier_use[i] <- calced[[col_name]]
     }
-    new_usage <- sum(inputs$tier_use)
+    total_usage <- sum(inputs$tier_use)
     
     #determine charge per tier
     
-    for(i in c(1:len)) {
+    for(i in c(1:num_tiers)) {
       col_name <- sprintf("XR%s", i)
       inputs$tier_charge[i] <- calced[[col_name]]
     }
     inputs$tier_charge
-    use_charge <- sum(inputs$tier_charge[1:len])
+    total_charge <- sum(inputs$tier_charge[1:num_tiers])
     
     total_vol_charge <- calced$commodity_charge #total_vol_charge <- sum(use_charge,penalty_charge)
     
@@ -133,82 +135,16 @@ fnUseByTier <- function(df1, points_add){
     df <- melt(inputs, id.vars = "tiers")
     
     #***************graphs**************************    
-    #use ggplot to create stacked bar graph of use by tier
-    use_breaks <- pretty(c(1:new_usage),n = len)
-    colormap <- c("blue", "green3", "yellow", "orange", "red2", "purple")
-    p1 <- ggplot(subset(df, variable %in% c("tier_use")), aes(x=variable, y=value, fill=fct_rev(tiers))) + 
-      geom_bar(stat="identity", width=0.25) +
-      ggtitle("Water Usage by Tier\n") +
-      xlab("") +
-      ylab("Billing Units (ccf)\n") +
-      scale_y_continuous(breaks = use_breaks, labels = use_breaks) +
-      scale_x_discrete(labels=c("tier_use" = "Current\n Usage"
-      ))+
-      scale_fill_manual(values = rev(colormap[1:len])
-      ) +
-      theme(axis.text.x = element_text(face="bold", color="#993333", 
-                                       size=14),
-            axis.text.y = element_text(face="bold", color="#993333", 
-                                       size=12),
-            #panel.grid.major.x = element_blank(),
-            #panel.grid.minor.x = element_blank(),
-            legend.position = "none")+
-      guides(fill=guide_legend(title=NULL))
-    p1
     
-    #use ggplot to create stacked bar graph of charge by tier  
-    bill_breaks <- pretty(c(1:use_charge),len)
-    p2 <- ggplot(subset(df, variable %in% c("tier_charge")), aes(x=variable, y=value, fill=fct_rev(tiers))) +
-      geom_bar(stat="identity", width=0.25) +
-      ggtitle("Water Charge by Tier\n") +
-      xlab("") +
-      ylab("Dollars\n") +
-      scale_fill_manual(values = rev(colormap[1:len])
-      ) +
-      scale_y_continuous(labels = dollar_format(),
-                         breaks = bill_breaks)+
-      scale_x_discrete(labels=c("tier_charge" = "Current\n Charge"
-      ))+
-      theme(axis.text.x = element_text(face="bold", color="#993333", 
-                                       size=14),
-            axis.text.y = element_text(face="bold", color="#993333", 
-                                       size=12),
-            #panel.grid.major.x = element_blank(),
-            #panel.grid.minor.x = element_blank(),
-            legend.position = "none")+
-      guides(fill=guide_legend(title=NULL))
-    p2
-    
-    #use ggplot to create stacked bar graph of charge by tier  
-    plegd_breaks <- c(0:len+1)
-    limitsAll <- c("1","2","3","4","5","6")
-    valuesAll <- c("purple", "red2", "orange", "yellow", "green3", "blue")
-    labelsAll <- c("Tier 6","Tier 5","Tier 4","Tier 3","Tier 2","Tier 1")
-    plegd <- ggplot(subset(df, variable == "tier_charge"), aes(x=variable, y=value, fill=factor(tiers))) + 
-      geom_bar(stat="identity", width=0) +
-      xlab("") +
-      ylab("") +
-      scale_fill_manual(values = tail(valuesAll, n=len),
-                        limits = limitsAll[1:len],
-                        labels = tail(labelsAll, n=len)
-      ) +
-      scale_y_discrete(breaks = plegd_breaks) +
-      theme(axis.text.x = element_blank(),
-            axis.text.y = element_blank(),
-            axis.ticks.x = element_blank(),
-            axis.ticks.y = element_blank(),
-            panel.grid.major.x = element_blank(),
-            panel.grid.minor.x = element_blank(),
-            panel.background =element_rect(fill = NA),
-            legend.position = c(0.5,0.5))+
-      guides(fill=guide_legend(title=NULL))
-    plegd
+    p1 <- plot_usage(df, num_tiers, total_usage)
+    p2 <- plot_charges(df, num_tiers, total_charge)
+    plegd <- plot_legend(df, num_tiers)
     
     #Sum of Current Charges
     total_bill = calced$bill
     
     #Table Preparation
-    vol_table <- data.frame(`Usage Tier` = c(tierAll[1:len],
+    vol_table <- data.frame(`Usage Tier` = c(tierAll[1:num_tiers],
                                              "Total Water\nUsage Charge",
                                              "Total Bill"),
                             `Usage Per Tier` = c(inputs$tier_use,"",""),

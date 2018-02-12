@@ -1,6 +1,6 @@
 library(shiny)
 library(DT)
-source("fnBillCalc_Shiny.R")
+source("R/fnBillCalc_Shiny.R")
 
 `%then%` <- shiny:::`%OR%`
 
