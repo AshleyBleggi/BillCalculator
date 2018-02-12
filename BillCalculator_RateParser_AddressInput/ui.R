@@ -142,7 +142,7 @@ shinyUI(fluidPage(
         condition = "input.cust_class == 'RESIDENTIAL_SINGLE'||input.cust_class == 'RESIDENTIAL_MULTI'",
         icon("users"),
         numericInput("homesize", label = h5("Persons in Household"),
-                     value = NULL, min = 0, max = 99)
+                     value = 4, min = 0, max = 99)
       ),
       
       
@@ -164,17 +164,18 @@ shinyUI(fluidPage(
       h4(""),icon("tree"),
       h5("Irrigable Area (sq. ft.)"),
       #h6("(1 BU = 748 gallons)"),
-      numericInput("irr_area", label = NULL, value = NULL, min = 0, max = 99999),
+      numericInput("irr_area", label = NULL, value = 2000, min = 0, max = 99999),
       
       
       h4(""),icon("tint"),
       h5("Billing Units Used"),
       h6("(1 BU = 748 gallons)"),
-      numericInput("usage", label = NULL, value = NULL, min = 0, max = 999),
+      numericInput("usage", label = NULL, value = 15, min = 0, max = 999),
+      
       h4(""),icon("calendar"),
       h5("Days in Billing Cycle"),
       h6("(Typically 28-35 days)"),
-      numericInput("bill_days", label = NULL, value = NULL, min = 0, max = 99),
+      numericInput("bill_days", label = NULL, value = 30, min = 0, max = 99),
       
       
       h4(""),icon("leaf"),
@@ -188,7 +189,8 @@ shinyUI(fluidPage(
       #         Jul=5.89; Aug=5.58; Sep=5.10;\n
       #         Oct=4.03; Nov=2.70; Dec=2.17
       #       )"),
-      numericInput("et", label = NULL, value = NULL, min = 0, max = 99),
+      numericInput("et", label = NULL, value = 5, min = 0, max = 99),
+      
       h4(""),
       h5("Meter Size"),
       h6("(Typically 3/4 in. for residential customers)"),
