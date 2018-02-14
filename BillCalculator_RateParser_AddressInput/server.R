@@ -15,7 +15,7 @@ shinyServer(
     geocode_data <- eventReactive(input$go,{
         # validate(need(input$address, "-Please specify address"))
         # geocode(input$address, output = "latlon")
-        data.frame("lon"=-117.7075, "lat"=33.56379)
+        data.frame("lon"=-118.251081, "lat"=34.044789)
       }
     )
     
@@ -228,7 +228,7 @@ shinyServer(
                                      h5("Temperature Zone"),
                                      selectInput("temperature_zone", 
                                                  label = NULL, 
-                                                 value = "Medium",
+                                                 selected = "Medium",
                                                  choices = c("Low","Medium","High")) )
         )
       }
@@ -239,7 +239,7 @@ shinyServer(
                                      h5("Senior citizen?"),
                                      selectInput("senior", 
                                                  label = NULL, 
-                                                 value = "no",
+                                                 selected = "no",
                                                  choices = c("yes","no")) )
         )
       }
@@ -250,7 +250,7 @@ shinyServer(
                                      h5("What is your water source?"),
                                      selectInput("water_font", 
                                                  label = NULL, 
-                                                 value = "city_delivered",
+                                                 selected = "city_delivered",
                                                  choices = c("city_delivered","private_wells")) )
         )
       }
@@ -261,51 +261,55 @@ shinyServer(
                                      h5("Tax exempt?"),
                                      selectInput("tax_exemption", 
                                                  label = NULL, 
-                                                 value = "not_granted",
+                                                 selected = "not_granted",
                                                  choices = c("granted","not_granted")) )
         )
       }
+      
+      if(grepl("meter_type", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),
+                                     h5("Meter Type"),
+                                     selectInput("meter_type", 
+                                                 label = NULL, 
+                                                 selected = "Displacement",
+                                                 choices = c("compound","FM", "Turbine", "Displacement")) )
+        )
+      }
+      
+      if(grepl("season", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),
+                                     h5("Season"),
+                                     selectInput("season", 
+                                                 label = NULL, 
+                                                 selected = "Summer",
+                                                 choices = c("Summer","Winter")) )
+        )
+      }
 
-#       
-#       conditionalPanel(
-#         condition = "input.district == 'Long Beach City of - 1656'",
-#         selectInput("tax_exemption", label = h5("Tax Exemption"), choices = c("granted",
-#                                                                               "not_granted"
-#         )
-#         )),
-#       
-#       conditionalPanel(
-#         condition = "input.district == 'El Dorado Irrigation District - Main - 934'",
-#         selectInput("turbine_meter", label = h5("Turbine Meter"), choices = c("Yes",
-#                                                                               "No"
-#         )
-#         )),
-#       
-#       conditionalPanel(
-#         condition = "input.district == 'Huntington Beach City of - 1376'||input.district == 'Livermore  City of - 1631'",
-#         selectInput("meter_type", label = h5("Meter Type"), choices = c("compound",
-#                                                                         "FM",
-#                                                                         "Turbine",
-#                                                                         "Displacement"
-#         )
-#         )),
-#       
-#       conditionalPanel(
-#         condition = "input.district == 'Long Beach City of - 1656'||input.district == 'Arcadia  City Of - 132'||input.district == 'Pasadena  City Of - 2136'||input.district == 'Los Angeles Department of Water and Power - 1665'",
-#         selectInput("season", label = h5("Season"), choices = c("Winter",
-#                                                                 "Summer"
-#         )
-#         )),
-#       
-#       conditionalPanel(
-#         condition = "input.district == 'Suburban Water Systems San Jose Hills - 16'",
-#         selectInput("tariff_area", label = h5("Tariff Area"), choices = c(1,2,3)
-#         )),
-#       
-#       conditionalPanel(
-#         condition = "input.district == 'Suburban Water Systems San Jose Hills - 16'",
-#         selectInput("block", label = h5("Block"), choices = c(1,2)
-#         )),
+      if(grepl("tariff_area", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),
+                                     h5("Tariff Area"),
+                                     selectInput("tariff_area", 
+                                                 label = NULL, 
+                                                 selected = 1,
+                                                 choices = c(1,2,3)) )
+        )
+      }
+      
+      if(grepl("block", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),
+                                     h5("Block"),
+                                     selectInput("block", 
+                                                 label = NULL, 
+                                                 selected = 1,
+                                                 choices = c(1,2)) )
+        )
+      }
+
       
       tagList(widgetList)
     })
