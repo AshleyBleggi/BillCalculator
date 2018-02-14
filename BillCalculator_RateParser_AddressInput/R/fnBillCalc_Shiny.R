@@ -64,22 +64,8 @@ standardize_OWRS_names <- function(owrs_file, current_class){
 
 #Function to Calculate Usage by Tier and Plot
 #************One-shot Version********************  
-fnUseByTier <- function(df1, points_add){
+fnUseByTier <- function(df1, owrs_file){
   ##########################################tier###############################################
-  # View(points_add)
-  districtshp <- readOGR("shp", "water_district",verbose=FALSE)
-  points_sp <- SpatialPoints(points_add, proj4string=CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
-  df_add <- over(points_sp, districtshp)
-  filePath <- Sys.glob(file.path("California", paste0(df_add$Agency_Nam, '*', collapse ='')))
-  
-  #filePath <- file.path("California", df1$district)
-  fileName <- list.files(filePath, pattern="*.owrs", full.name=TRUE)
-  if (length(fileName) >= 1){
-    fileName <- tail(fileName, n=1)
-  }
-  owrs_file <- read_owrs_file(fileName)
-  
-  
   custclass <- df1$cust_class
   owrs_file <- standardize_OWRS_names(owrs_file, custclass)
   calced <- calculate_bill(df1, owrs_file)
