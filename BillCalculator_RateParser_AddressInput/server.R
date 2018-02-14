@@ -107,46 +107,205 @@ shinyServer(
       
       if(grepl("hhsize", owrs_str)){
         widgetList <- append(widgetList,
-               tagList(h4(""),
-               icon("users"),
-               h5("Number of Persons in Household"),
-               numericInput("homesize", label = NULL, value = 4, min = 0, max = 99))
-               )
+                             tagList(h4(""),icon("users"),
+                                     h5("Number of Persons in Household"),
+                                     numericInput("homesize", label = NULL, value = 4, min = 0, max = 99))
+        )
       }
       
-      if(TRUE){
+      if(grepl("irr_area", owrs_str)){
         widgetList <- append(widgetList,
-               tagList(h4(""),icon("tree"),
-               h5("Irrigable Area (sq. ft.)"),
-               #h6("(1 BU = 748 gallons)"),
-               numericInput("irr_area", label = NULL, value = 2000, min = 0, max = 99999),
-               
-               
-               h4(""),icon("calendar"),
-               h5("Days in Billing Cycle"),
-               h6("(Typically 28-35 days)"),
-               numericInput("bill_days", label = NULL, value = 30, min = 0, max = 99),
-               
-               
-               h4(""),icon("leaf"),
-               h5("Evapotranspiration"),
-               h6("(This month's average ET - ",ET$ETF[ET$Months == months.Date(Sys.Date())],")"),
-               numericInput("et", label = NULL, value = 5, min = 0, max = 99),
-               
-               h4(""),
-               h5("Meter Size"),
-               h6("(Typically 3/4 in. for residential customers)"),
-               selectInput("meter", 
-                           label = NULL,
-                           choices = c("5/8 in." = '5/8"', "3/4 in." = '3/4"',
-                                       "1 in." = '1"', "1 1/2 in." = '1 1/2"',
-                                       "2 in." = '2"', "3 in." = '3"',
-                                       "4 in." = '4"', "6 in." = '6"',
-                                       "8 in." = '8"', "10 in." = '10"'),
-                           selected = '3/4"'),
-               textOutput("budget"))
-          )
+                             tagList(h4(""),icon("tree"),
+                                     h5("Irrigable Area (sq. ft.)"),
+                                     numericInput("irr_area", label = NULL, value = 2000, min = 0, max = 99999))
+        )
       }
+      
+      if(grepl("days_in_period", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),icon("calendar"),
+                                     h5("Days in Billing Cycle"),
+                                     h6("(Typically 28-35 days)"),
+                                     numericInput("bill_days", label = NULL, value = 30, min = 0, max = 99) )
+        )
+      }
+      
+      if(grepl("et_amount", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),icon("leaf"),
+                                     h5("Evapotranspiration"),
+                                     h6("(This month's average ET - ",ET$ETF[ET$Months == months.Date(Sys.Date())],")"),
+                                     numericInput("et", label = NULL, value = 5, min = 0, max = 99) )
+        )
+      }
+      
+      if(grepl("meter_size", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),
+                                     h5("Meter Size"),
+                                     h6("(Typically 3/4 in. for residential customers)"),
+                                     selectInput("meter", 
+                                                 label = NULL,
+                                                 choices = c("5/8 in." = '5/8"', "3/4 in." = '3/4"',
+                                                             "1 in." = '1"', "1 1/2 in." = '1 1/2"',
+                                                             "2 in." = '2"', "3 in." = '3"',
+                                                             "4 in." = '4"', "6 in." = '6"',
+                                                             "8 in." = '8"', "10 in." = '10"'),
+                                                 selected = '3/4"'),
+                                     textOutput("budget") )
+        )
+      }
+      
+      if(grepl("city_limits", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),
+                                     h5("Are you located within the city limits?"),
+                                     selectInput("city_limits", 
+                                                 label = NULL, 
+                                                 choices = c("inside_city","outside_city"),
+                                                 selected = 'inside_city' ) )
+        )
+      }
+      
+      if(grepl("usage_month", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),
+                                     h5("Month (1-12)"),
+                                     numericInput("usage_month", 
+                                                  label = NULL,
+                                                  value = as.integer(format(Sys.Date(),"%m")), 
+                                                  min = 1, max = 12) )
+        )
+      }
+      
+      if(grepl("usage_zone", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),
+                                     h5("Usage Zone"),
+                                     numericInput("usage_zone", 
+                                                  label = NULL,
+                                                  value = 1, 
+                                                  min = 1, max = 5) )
+        )
+      }
+
+      if(grepl("pressure_zone", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),
+                                     h5("Pressure Zone"),
+                                     numericInput("pressure_zone", 
+                                                  label = NULL,
+                                                  value = 1, 
+                                                  min = 1, max = 4) )
+        )
+      }
+      
+      if(grepl("elevation_zone", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),
+                                     h5("Elevation Zone"),
+                                     numericInput("elevation_zone", 
+                                                  label = NULL,
+                                                  value = 1, 
+                                                  min = 1, max = 6) )
+        )
+      }
+      
+      if(grepl("lot_size_group", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),
+                                     h5("Lot Size Group (1-5"),
+                                     numericInput("lot_size_group", 
+                                                  label = NULL,
+                                                  value = 1, 
+                                                  min = 1, max = 6) )
+        )
+      }
+
+      if(grepl("temperature_zone", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),
+                                     h5("Temperature Zone"),
+                                     selectInput("temperature_zone", 
+                                                 label = NULL, 
+                                                 value = "Medium",
+                                                 choices = c("Low","Medium","High")) )
+        )
+      }
+
+      if(grepl("senior", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),
+                                     h5("Senior citizen?"),
+                                     selectInput("senior", 
+                                                 label = NULL, 
+                                                 value = "no",
+                                                 choices = c("yes","no")) )
+        )
+      }
+
+      if(grepl("water_font", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),
+                                     h5("What is your water source?"),
+                                     selectInput("water_font", 
+                                                 label = NULL, 
+                                                 value = "city_delivered",
+                                                 choices = c("city_delivered","private_wells")) )
+        )
+      }
+      
+      if(grepl("tax_exemption", owrs_str)){
+        widgetList <- append(widgetList,
+                             tagList(h4(""),
+                                     h5("Tax exempt?"),
+                                     selectInput("tax_exemption", 
+                                                 label = NULL, 
+                                                 value = "not_granted",
+                                                 choices = c("granted","not_granted")) )
+        )
+      }
+
+#       
+#       conditionalPanel(
+#         condition = "input.district == 'Long Beach City of - 1656'",
+#         selectInput("tax_exemption", label = h5("Tax Exemption"), choices = c("granted",
+#                                                                               "not_granted"
+#         )
+#         )),
+#       
+#       conditionalPanel(
+#         condition = "input.district == 'El Dorado Irrigation District - Main - 934'",
+#         selectInput("turbine_meter", label = h5("Turbine Meter"), choices = c("Yes",
+#                                                                               "No"
+#         )
+#         )),
+#       
+#       conditionalPanel(
+#         condition = "input.district == 'Huntington Beach City of - 1376'||input.district == 'Livermore  City of - 1631'",
+#         selectInput("meter_type", label = h5("Meter Type"), choices = c("compound",
+#                                                                         "FM",
+#                                                                         "Turbine",
+#                                                                         "Displacement"
+#         )
+#         )),
+#       
+#       conditionalPanel(
+#         condition = "input.district == 'Long Beach City of - 1656'||input.district == 'Arcadia  City Of - 132'||input.district == 'Pasadena  City Of - 2136'||input.district == 'Los Angeles Department of Water and Power - 1665'",
+#         selectInput("season", label = h5("Season"), choices = c("Winter",
+#                                                                 "Summer"
+#         )
+#         )),
+#       
+#       conditionalPanel(
+#         condition = "input.district == 'Suburban Water Systems San Jose Hills - 16'",
+#         selectInput("tariff_area", label = h5("Tariff Area"), choices = c(1,2,3)
+#         )),
+#       
+#       conditionalPanel(
+#         condition = "input.district == 'Suburban Water Systems San Jose Hills - 16'",
+#         selectInput("block", label = h5("Block"), choices = c(1,2)
+#         )),
       
       tagList(widgetList)
     })
