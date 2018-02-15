@@ -40,62 +40,111 @@ shinyServer(
     # Assemble the inputs into a dataframe and create plots
     # Depends on all inputs
     use_by_tier_data <- reactive({
-      validate(
-        #need(input$district, ""),
-        # need(input$address, "-Please specify address"),
-        
-        need(input$usage, "-Please specify water usage") %then%
-          need(input$usage < 999 & input$usage > 0, "-Please enter usage between 0 and 999 BU"),
-        
-        need(input$bill_days, "-Please specify the number of days in this billing cycle") %then%
-          need(input$bill_days < 99 & input$bill_days > 0, "-Please enter between 0 and 99 days"),
-        
-        if(TRUE){
-          need(input$homesize, "-Please specify your household size")} %then% 
-          need(input$homesize < 99 & input$homesize > 0, "-Please enter a household size less than 99"),
-        
-        need(input$irr_area, "-Please specify the irrigable area associated with your account") %then%
-          need(input$irr_area < 99999 & input$irr_area > 0, "-Please enter an irrigable area less than 99,999 and greater than 0"),
-        
-        need(input$et, "-Please specify the evapotranspiration factor associated with this bill:
-             ET varies daily by microzone. There are 110 microzones within the MNWD service area.
-             Your water budget is calculated based on the actual ET during the billing cycle;
-             however, it is possible to estimate your water budget based on historical ET.
-             The 7-year historical average ET values for the MNWD service area are:
-             Jan = 2.26; Feb = 2.53; Mar=3.08; Apr=3.74;
-             May=4.54; Jun=4.44; Jul=4.71; Aug=4.56;
-             Sep=4.97; Oct=3.88; Nov=3.15; Dec=2.29") %then% 
-          need(input$et < 99 & input$et > 0, "-Please enter an evapotranspiration factor less than 99")
-      )
       
-      input_df <- data.frame(
-        usage_ccf = input$usage, 
-        hhsize = input$homesize,
-        days_in_period = input$bill_days, 
-        irr_area = input$irr_area, 
-        et_amount = input$et, 
-        meter_size = input$meter,
-        cust_class = cust_class
-        # city_limits = input$city_limits,
-        # usage_month = input$usage_month,
-        # usage_zone = input$usage_zone,
-        # pressure_zone = input$pressure_zone,
-        # water_font = input$water_font,
-        # elevation_zone = input$elevation_zone,
-        # tax_exemption = input$tax_exemption,
-        # season = input$season,
-        # turbine_meter = input$turbine_meter,
-        # meter_type = input$meter_type,
-        # senior = input$senior,
-        # tariff_area = input$tariff_area,
-        # block = input$block,
-        # lot_size_group = input$lot_size_group,
-        # temperature_zone = input$temperature_zone
-      )
+      widget_values <- list()
+      owrs_str <- jsonlite::toJSON(owrs_file()$rate_structure[[cust_class]])
+      # rate_options <- c("hhsize", "irr_area", "days_in_period", "et_amount", "meter_size", "city_limits",
+      #                   "usage_month", "usage_zone", "pressure_zone", "elevation_zone", "lot_size_group",
+      #                   "temperature_zone", "senior","water_font", "tax_exemption", "meter_type", "season",
+      #                   "tariff_area", "block")
+      
+      widget_values[["usage_ccf"]] <- input[["usage"]]
+      widget_values[["cust_class"]] <- cust_class
+      
+      if(grepl("hhsize", owrs_str)){
+        widget_values[["hhsize"]] <- input[["hhsize"]]
+      }
+      if(grepl("irr_area", owrs_str)){
+        widget_values[["irr_area"]] <- input[["irr_area"]]
+      }
+      if(grepl("days_in_period", owrs_str)){
+        widget_values[["days_in_period"]] <- input[["days_in_period"]]
+      }
+      if(grepl("et_amount", owrs_str)){
+        widget_values[["et_amount"]] <- input[["et_amount"]]
+      }
+      if(grepl("meter_size", owrs_str)){
+        widget_values[["meter_size"]] <- input[["meter_size"]]
+      }
+      if(grepl("city_limits", owrs_str)){
+        widget_values[["city_limits"]] <- input[["city_limits"]]
+      }
+      if(grepl("usage_month", owrs_str)){
+        widget_values[["usage_month"]] <- input[["usage_month"]]
+      }
+      if(grepl("usage_zone", owrs_str)){
+        widget_values[["usage_zone"]] <- input[["usage_zone"]]
+      }
+      if(grepl("pressure_zone", owrs_str)){
+        widget_values[["pressure_zone"]] <- input[["pressure_zone"]]
+      }
+      if(grepl("elevation_zone", owrs_str)){
+        widget_values[["elevation_zone"]] <- input[["elevation_zone"]]
+      }
+      if(grepl("lot_size_group", owrs_str)){
+        widget_values[["lot_size_group"]] <- input[["lot_size_group"]]
+      }
+      if(grepl("temperature_zone", owrs_str)){
+        widget_values[["temperature_zone"]] <- input[["temperature_zone"]]
+      }
+      if(grepl("senior", owrs_str)){
+        widget_values[["senior"]] <- input[["senior"]]
+      }
+      if(grepl("water_font", owrs_str)){
+        widget_values[["water_font"]] <- input[["water_font"]]
+      }
+      if(grepl("tax_exemption", owrs_str)){
+        widget_values[["tax_exemption"]] <- input[["tax_exemption"]]
+      }
+      if(grepl("meter_type", owrs_str)){
+        widget_values[["meter_type"]] <- input[["meter_type"]]
+      }
+      if(grepl("season", owrs_str)){
+        widget_values[["season"]] <- input[["season"]]
+      }
+      if(grepl("tariff_area", owrs_str)){
+        widget_values[["tariff_area"]] <- input[["tariff_area"]]
+      }
+      if(grepl("block", owrs_str)){
+        widget_values[["block"]] <- input[["block"]]
+      }
+      
+      input_df <- data.frame(widget_values)
+      
+      # input_df <- data.frame(
+      #   usage_ccf = input$usage, 
+      #   hhsize = input$homesize,
+      #   days_in_period = input$bill_days, 
+      #   irr_area = input$irr_area, 
+      #   et_amount = input$et, 
+      #   meter_size = input$meter,
+      #   cust_class = cust_class
+      #   # city_limits = input$city_limits,
+      #   # usage_month = input$usage_month,
+      #   # usage_zone = input$usage_zone,
+      #   # pressure_zone = input$pressure_zone,
+      #   # water_font = input$water_font,
+      #   # elevation_zone = input$elevation_zone,
+      #   # tax_exemption = input$tax_exemption,
+      #   # season = input$season,
+      #   # turbine_meter = input$turbine_meter,
+      #   # meter_type = input$meter_type,
+      #   # senior = input$senior,
+      #   # tariff_area = input$tariff_area,
+      #   # block = input$block,
+      #   # lot_size_group = input$lot_size_group,
+      #   # temperature_zone = input$temperature_zone
+      # )
       
       #call plots
-      plotList<-fnUseByTier(input_df, owrs_file())
-      plotList
+      if(nrow(input_df) > 0){
+        plotList<-fnUseByTier(input_df, owrs_file())
+        plotList
+      }
+      else{
+        list(NULL,NULL,NULL,NULL)
+      }
+      
     })
     
     # Generate those inputs that are required by the OWRS file
@@ -109,7 +158,7 @@ shinyServer(
         widgetList <- append(widgetList,
                              tagList(h4(""),icon("users"),
                                      h5("Number of Persons in Household"),
-                                     numericInput("homesize", label = NULL, value = 4, min = 0, max = 99))
+                                     numericInput("hhsize", label = NULL, value = 4, min = 0, max = 99))
         )
       }
       
@@ -126,7 +175,7 @@ shinyServer(
                              tagList(h4(""),icon("calendar"),
                                      h5("Days in Billing Cycle"),
                                      h6("(Typically 28-35 days)"),
-                                     numericInput("bill_days", label = NULL, value = 30, min = 0, max = 99) )
+                                     numericInput("days_in_period", label = NULL, value = 30, min = 0, max = 99) )
         )
       }
       
@@ -135,7 +184,7 @@ shinyServer(
                              tagList(h4(""),icon("leaf"),
                                      h5("Evapotranspiration"),
                                      h6("(This month's average ET - ",ET$ETF[ET$Months == months.Date(Sys.Date())],")"),
-                                     numericInput("et", label = NULL, value = 5, min = 0, max = 99) )
+                                     numericInput("et_amount", label = NULL, value = 5, min = 0, max = 99) )
         )
       }
       
@@ -144,7 +193,7 @@ shinyServer(
                              tagList(h4(""),
                                      h5("Meter Size"),
                                      h6("(Typically 3/4 in. for residential customers)"),
-                                     selectInput("meter", 
+                                     selectInput("meter_size", 
                                                  label = NULL,
                                                  choices = c("5/8 in." = '5/8"', "3/4 in." = '3/4"',
                                                              "1 in." = '1"', "1 1/2 in." = '1 1/2"',
