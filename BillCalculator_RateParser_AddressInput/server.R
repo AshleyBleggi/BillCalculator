@@ -14,8 +14,20 @@ shinyServer(
     # Geocode address. Depends on entering address and clicking "Update" button.
     geocode_data <- eventReactive(input$go,{
         # validate(need(input$address, "-Please specify address"))
-        # geocode(input$address, output = "latlon")
-        data.frame("lon"=-118.251081, "lat"=34.044789)
+        coords <- geocode(input$address, output = "latlon")
+        # coords <- data.frame("lon"=-118.251081, "lat"=34.044789)
+        
+        # sleep for short period then give one extra try in the case of over-limit geocoding
+        if(is.na(coords$lon) || is.na(coords$lat)){
+          Sys.sleep(0.5)
+          coords <- geocode(input$address, output = "latlon")
+        }
+        
+        if(is.na(coords$lon) || is.na(coords$lat)){
+          NULL
+        }else{
+          coords
+        }
       }
     )
     
@@ -23,17 +35,37 @@ shinyServer(
     # After finding the distict, read the OWRS file for that district and return it
     # Depends on geocode_data
     owrs_file <- reactive({
-      districtshp <- readOGR("shp", "water_district",verbose=FALSE)
-      points_sp <- SpatialPoints(geocode_data(), proj4string=CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
-      df_add <- over(points_sp, districtshp)
-      filePath <- Sys.glob(file.path("California", paste0(df_add$Agency_Nam, '*', collapse ='')))
       
-      #filePath <- file.path("California", df1$district)
+      if(!is.null(geocode_data())){
+        districtshp <- readOGR("shp", "water_district",verbose=FALSE)
+        points_sp <- SpatialPoints(geocode_data(), proj4string=CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+        df_add <- over(points_sp, districtshp)
+        filePath <- Sys.glob(file.path("California", paste0(df_add$Agency_Nam, '*', collapse ='')))
+      }else{
+        filePath <- character(0)
+      }
+      
+      
+      #TODO if multiple files are available only return the  most recent one
       fileName <- list.files(filePath, pattern="*.owrs", full.name=TRUE)
       if (length(fileName) >= 1){
         fileName <- tail(fileName, n=1)
       }
-      owrs_file <- read_owrs_file(fileName)
+     
+      if (length(fileName) >= 1){
+        owrs_file <- read_owrs_file(fileName)
+      }else{
+        owrs_file <- NULL
+        showModal(modalDialog(
+          title = "Pricing data not found.",
+          paste("Sorry, we were unable to find water pricing information for the address '",
+                input$address, 
+                "'.Maybe we couldn't match your address with ",
+                "a water district, or maybe we don't yet have pricing information for your district."),
+          easyClose = TRUE
+        ))
+      }
+      
       owrs_file
     })
     
@@ -137,7 +169,7 @@ shinyServer(
       # )
       
       #call plots
-      if(nrow(input_df) > 0){
+      if( (nrow(input_df) > 0) && !is.null(owrs_file()) ){
         plotList<-fnUseByTier(input_df, owrs_file())
         plotList
       }
@@ -150,7 +182,6 @@ shinyServer(
     # Generate those inputs that are required by the OWRS file
     # depends on owrs_file
     output$rateInputs <- renderUI({
-      
       owrs_str <- jsonlite::toJSON(owrs_file()$rate_structure[[cust_class]])
       widgetList <- list()
       
