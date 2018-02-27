@@ -41,32 +41,48 @@ shinyServer(
         points_sp <- SpatialPoints(geocode_data(), proj4string=CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
         df_add <- over(points_sp, districtshp)
         filePath <- Sys.glob(file.path("California", paste0(df_add$Agency_Nam, '*', collapse ='')))
+        
+        #TODO if multiple files are available only return the  most recent one
+        fileName <- list.files(filePath, pattern="*.owrs", full.name=TRUE)
+        if (length(fileName) >= 1){
+          fileName <- tail(fileName, n=1)
+        }
+        
+        if (length(fileName) >= 1){
+          owrs_file <- read_owrs_file(fileName)
+        }else{
+          owrs_file <- NULL
+          showModal(modalDialog(
+            title = "Pricing data not found.",
+            paste("Sorry, we were unable to find water pricing information for the address '",
+                  input$address, 
+                  "'. We might not have pricing information for your district yet!"),
+            easyClose = TRUE
+          ))
+        }
+        
       }else{
-        filePath <- character(0)
-      }
-      
-      
-      #TODO if multiple files are available only return the  most recent one
-      fileName <- list.files(filePath, pattern="*.owrs", full.name=TRUE)
-      if (length(fileName) >= 1){
-        fileName <- tail(fileName, n=1)
-      }
-     
-      if (length(fileName) >= 1){
-        owrs_file <- read_owrs_file(fileName)
-      }else{
-        owrs_file <- NULL
         showModal(modalDialog(
-          title = "Pricing data not found.",
-          paste("Sorry, we were unable to find water pricing information for the address '",
+          title = "Unable to locate address.",
+          paste("Sorry, we were unable to map the address you entered '",
                 input$address, 
-                "'.Maybe we couldn't match your address with ",
-                "a water district, or maybe we don't yet have pricing information for your district."),
+                "' to a location on the Earth. Maybe you mistyped something?"),
           easyClose = TRUE
         ))
       }
       
+      
+      
+     
+      
+      
       owrs_file
+    })
+    
+    # output the name of the select water district
+    # Depends on owrs_file
+    output$district <- renderText({
+      owrs_file()$metadata$utility_name
     })
     
     # Assemble the inputs into a dataframe and create plots
