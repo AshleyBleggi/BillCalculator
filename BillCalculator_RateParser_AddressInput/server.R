@@ -201,6 +201,13 @@ shinyServer(
       owrs_str <- jsonlite::toJSON(owrs_file()$rate_structure[[cust_class]])
       widgetList <- list()
       
+      widgetList <- append(widgetList,
+                           tagList(h4(""),icon("tint"),
+                                   h5(paste(owrs_file()$metadata$bill_frequency,"Billing Units Used") ),
+                                   h6("(1 BU = 748 gallons)"),
+                                   numericInput("usage", label = NULL, value = 15, min = 0, max = 999) )
+      )
+      
       if(grepl("hhsize", owrs_str)){
         widgetList <- append(widgetList,
                              tagList(h4(""),icon("users"),

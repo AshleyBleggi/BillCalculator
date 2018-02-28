@@ -31,11 +31,6 @@ shinyUI(fluidPage(
       #                         "Multi Family Residential" = "RESIDENTIAL_MULTI"
       # )),
       
-      h4(""),icon("tint"),
-      h5("Billing Units Used"),
-      h6("(1 BU = 748 gallons)"),
-      numericInput("usage", label = NULL, value = 15, min = 0, max = 999),
-      
       uiOutput("rateInputs"),
       
       width = 3
