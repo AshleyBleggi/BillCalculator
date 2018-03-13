@@ -37,10 +37,14 @@ shinyServer(
     owrs_file <- reactive({
       
       if(!is.null(geocode_data())){
-        districtshp <- readOGR("shp", "water_district",verbose=FALSE)
-        points_sp <- SpatialPoints(geocode_data(), proj4string=CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
-        df_add <- over(points_sp, districtshp)
-        filePath <- Sys.glob(file.path("California", paste0(df_add$Agency_Nam, '*', collapse ='')))
+        districtshp <- st_read("./shp/water_district.shp")
+        point <- st_point(c(geocode_data()$lon, geocode_data()$lat))
+        districts_within <- districtshp %>% 
+          filter(row_number() %in% st_within(point, districtshp)[[1]] ) %>%
+          mutate(area = st_area(geometry)) %>%
+          arrange(area)
+        agency_name <- as.character(districts_within$Agency_Nam)[1]
+        filePath <- Sys.glob(file.path("California", paste0(agency_name, '*', collapse ='')))
         
         #TODO if multiple files are available only return the  most recent one
         fileName <- list.files(filePath, pattern="*.owrs", full.name=TRUE)
