@@ -34,7 +34,7 @@ shinyServer(
     # Spatial join the geocoded address points with the Water District boundary shapefile
     # After finding the distict, read the OWRS file for that district and return it
     # Depends on geocode_data
-    owrs_file <- reactive({
+    owrs_file <- eventReactive(input$go,{
       
       if(!is.null(geocode_data())){
         districtshp <- st_read("./shp/water_district.shp")
@@ -66,6 +66,7 @@ shinyServer(
         }
         
       }else{
+        owrs_file <- NULL
         showModal(modalDialog(
           title = "Unable to locate address.",
           paste("Sorry, we were unable to map the address you entered '",

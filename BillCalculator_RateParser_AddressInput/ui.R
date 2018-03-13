@@ -5,8 +5,9 @@ library(DT)
 shinyUI(fluidPage(
   tags$head(tags$style(
     type="text/css",
-    "#logo img {max-width: 100%; width: 100%; height: auto}"
-  )),
+    "#logo img {max-width: 100%; width: 100%; height: auto}"),
+    tags$script(src = "enter_button.js")
+  ),
   
   sidebarLayout(#column(3, wellPanel(
     sidebarPanel(
