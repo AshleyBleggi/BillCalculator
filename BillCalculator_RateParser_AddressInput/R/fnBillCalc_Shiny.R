@@ -10,10 +10,9 @@ library(scales)
 library(forcats)
 library(RateParser)
 library(sf)
-
+library(dplyr)
 library(maps)
 library(maptools)
-library(rgdal)
 library(ggmap)
 
 source("R/plots.R")
