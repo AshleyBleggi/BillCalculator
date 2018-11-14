@@ -9,7 +9,7 @@ shinyServer(
     
     geocode_data <- eventReactive(input$go,{
         # validate(need(input$address, "-Please specify address"))
-        geocode(input$address, output = "latlon")
+        geocode(input$address, source = "dsk", output = "latlon")
       }
     )
     
