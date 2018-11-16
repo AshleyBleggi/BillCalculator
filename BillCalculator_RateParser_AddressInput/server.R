@@ -14,7 +14,7 @@ shinyServer(
     # Geocode address. Depends on entering address and clicking "Update" button.
     geocode_data <- eventReactive(input$go,{
         # validate(need(input$address, "-Please specify address"))
-        coords <- geocode(input$address, output = "latlon")
+        coords <- geocode(input$address, source = "dsk", output = "latlon")
         # coords <- data.frame("lon"=-118.251081, "lat"=34.044789)
         
         # sleep for short period then give one extra try in the case of over-limit geocoding
