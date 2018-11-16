@@ -20,7 +20,7 @@ shinyServer(
         # sleep for short period then give one extra try in the case of over-limit geocoding
         if(is.na(coords$lon) || is.na(coords$lat)){
           Sys.sleep(0.5)
-          coords <- geocode(input$address, output = "latlon")
+          coords <- geocode(input$address, source = "dsk", output = "latlon")
         }
         
         if(is.na(coords$lon) || is.na(coords$lat)){
