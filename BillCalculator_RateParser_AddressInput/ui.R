@@ -38,6 +38,11 @@ shinyUI(fluidPage(
     ),
     
     mainPanel(#column(9,
+      tags$style(type="text/css",
+                 ".shiny-output-error { visibility: hidden; }",
+                 ".shiny-output-error:before { visibility: hidden; }"
+      ),
+                 
       h2("Residential Water Budget Bill Calculator",
          style = "font-family: 'Arial Narrow'; margin-top: 0.83 em; margin-bottom: 0em; font-weight:900 ; color:rgb(0,51,127)",
          align = "center"),
