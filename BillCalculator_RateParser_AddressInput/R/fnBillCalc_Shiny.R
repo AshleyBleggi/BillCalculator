@@ -9,10 +9,10 @@ library(gtable)
 library(scales)
 library(forcats)
 library(RateParser)
-library(sp)
+library(sf)
+library(dplyr)
 library(maps)
 library(maptools)
-library(rgdal)
 library(ggmap)
 
 source("R/plots.R")
@@ -48,6 +48,21 @@ standardize_OWRS_names <- function(owrs_file, current_class){
 
   mask <- names(owrs_file$rate_structure[[current_class]]) == "flat_rate_commodity"
   names(owrs_file$rate_structure[[current_class]])[mask] <- "flat_rate"
+  
+  mask <- names(owrs_file$rate_structure[[current_class]]) == "budget_commodity"
+  names(owrs_file$rate_structure[[current_class]])[mask] <- "budget"
+  
+  mask <- names(owrs_file$rate_structure[[current_class]]) == "indoor_commodity"
+  names(owrs_file$rate_structure[[current_class]])[mask] <- "indoor"
+  
+  mask <- names(owrs_file$rate_structure[[current_class]]) == "outdoor_commodity"
+  names(owrs_file$rate_structure[[current_class]])[mask] <- "outdoor"
+  
+  mask <- names(owrs_file$rate_structure[[current_class]]) == "gpcd_commodity"
+  names(owrs_file$rate_structure[[current_class]])[mask] <- "gpcd"
+  
+  mask <- names(owrs_file$rate_structure[[current_class]]) == "landscape_factor_commodity"
+  names(owrs_file$rate_structure[[current_class]])[mask] <- "landscape_factor"
 
   if(owrs_file$rate_structure[[current_class]]$commodity_charge == "flat_rate_commodity*usage_ccf"){
     owrs_file$rate_structure[[current_class]]$commodity_charge <- "flat_rate*usage_ccf"
@@ -64,22 +79,8 @@ standardize_OWRS_names <- function(owrs_file, current_class){
 
 #Function to Calculate Usage by Tier and Plot
 #************One-shot Version********************  
-fnUseByTier <- function(df1, points_add){
+fnUseByTier <- function(df1, owrs_file){
   ##########################################tier###############################################
-  # View(points_add)
-  districtshp <- readOGR("shp", "water_district",verbose=FALSE)
-  points_sp <- SpatialPoints(points_add, proj4string=CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
-  df_add <- over(points_sp, districtshp)
-  filePath <- Sys.glob(file.path("California", paste0(df_add$Agency_Nam, '*', collapse ='')))
-  
-  #filePath <- file.path("California", df1$district)
-  fileName <- list.files(filePath, pattern="*.owrs", full.name=TRUE)
-  if (length(fileName) >= 1){
-    fileName <- tail(fileName, n=1)
-  }
-  owrs_file <- read_owrs_file(fileName)
-  
-  
   custclass <- df1$cust_class
   owrs_file <- standardize_OWRS_names(owrs_file, custclass)
   calced <- calculate_bill(df1, owrs_file)
